@@ -100,7 +100,7 @@ public class NetstatMonitor extends IpReputationMonitor {
 
     @Override
     public void start() {
-        final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("Windows");
+        final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("windows");
         Thread thread = new Thread(
             new Runnable() {
                 @Override
