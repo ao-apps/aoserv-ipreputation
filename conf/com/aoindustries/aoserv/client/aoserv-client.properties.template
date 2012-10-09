@@ -9,4 +9,5 @@ aoserv.client.ssl.port=4583
 aoserv.client.ssl.connection.pool.size=8
 aoserv.client.ssl.truststore.path=${PATH_TO_CONF_CACERTS}
 # aoserv.client.ssl.truststore.path=C:\\Program Files (X86)\\ipreputation\\conf\\cacerts
+# aoserv.client.ssl.truststore.path=/opt/ipreputation/conf/cacerts
 aoserv.client.ssl.truststore.password=changeit
