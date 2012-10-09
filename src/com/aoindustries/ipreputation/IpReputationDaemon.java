@@ -1,3 +1,5 @@
+package com.aoindustries.ipreputation;
+
 import com.aoindustries.aoserv.client.AOServConnector;
 import com.aoindustries.aoserv.client.IPAddress;
 import com.aoindustries.aoserv.client.IpReputationSet;
@@ -10,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-public class NetstatMonitor {
+public class IpReputationDaemon {
 
 	private static final long CHECK_INTERVAL = 30000L;
 	private static final long ERROR_SLEEP = 30000L;
@@ -20,7 +22,7 @@ public class NetstatMonitor {
 	private static final IpReputationSet.ReputationType REPUTATION_TYPE = IpReputationSet.ReputationType.GOOD;
 	private static final short SCORE = 1;
 
-	private static final Logger logger = Logger.getLogger(NetstatMonitor.class.getName());
+	private static final Logger logger = Logger.getLogger(IpReputationDaemon.class.getName());
 
 	private static final String[] command = {
 		"netstat",
