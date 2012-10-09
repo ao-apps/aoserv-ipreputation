@@ -31,6 +31,12 @@ public class NetstatMonitor extends IpReputationMonitor {
         "TCP"
     };
 
+    private static final String[] nonWindowsCommand = {
+        "netstat",
+        "-n",
+        "-t"
+    };
+
     private final String setName;
     private final Set<Integer> localPorts;
     private final long checkInterval;
@@ -94,6 +100,7 @@ public class NetstatMonitor extends IpReputationMonitor {
 
     @Override
     public void start() {
+        final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("Windows");
         Thread thread = new Thread(
             new Runnable() {
                 @Override
@@ -109,7 +116,7 @@ public class NetstatMonitor extends IpReputationMonitor {
                             IpReputationSet reputationSet = conn.getIpReputationSets().get(setName);
                             if(reputationSet==null) throw new NullPointerException("IP Reputation Set not found: " + setName);
                             while(true) {
-                                ProcessResult result = ProcessResult.exec(windowsCommand);
+                                ProcessResult result = ProcessResult.exec(isWindows ? windowsCommand : nonWindowsCommand);
                                 int exitVal = result.getExitVal();
                                 if(exitVal!=0) throw new IOException("Non-zero exit value: " + exitVal +".  stderr=" + result.getStderr());
                                 uniqueIPs.clear();
@@ -117,36 +124,52 @@ public class NetstatMonitor extends IpReputationMonitor {
                                     line = line.trim();
                                     if(
                                         line.length()>0
-                                        && !line.startsWith("Active Connections")
-                                        && !line.startsWith("Proto")
+                                        && !line.startsWith("Active ")
+                                        && !line.startsWith("Proto ")
                                     ) {
-                                        String[] values = StringUtility.splitString(line);
-                                        if(values.length==4) {
-                                            String proto = values[0];
-                                            String localAddress = values[1];
-                                            String foreignAddress = values[2];
-                                            String state = values[3];
-                                            if(
-                                                proto.equals("TCP")
-                                                && state.equals("ESTABLISHED")
-                                            ) {
-                                                int colonPos = localAddress.lastIndexOf(':');
-                                                if(colonPos!=-1) {
-                                                    int localPort = Integer.parseInt(localAddress.substring(colonPos+1));
-                                                    if(localPorts.contains(localPort)) {
-                                                        colonPos = foreignAddress.lastIndexOf(':');
-                                                        if(colonPos!=-1) {
-                                                            uniqueIPs.add(IPAddress.getIntForIPAddress(foreignAddress.substring(0, colonPos)));
-                                                        } else {
-                                                            System.err.println("Warning, cannot parse line: " + line);
-                                                        }
-                                                    }
-                                                } else {
-                                                    System.err.println("Warning, cannot parse line: " + line);
-                                                }
+                                        final String proto;
+                                        final String localAddress;
+                                        final String foreignAddress;
+                                        final String state;
+                                        {
+                                            String[] values = StringUtility.splitString(line);
+                                            if(values.length==4) {
+                                                proto = values[0];
+                                                localAddress = values[1];
+                                                foreignAddress = values[2];
+                                                state = values[3];
+                                            } else if(values.length==6) {
+                                                proto = values[0];
+                                                localAddress = values[3];
+                                                foreignAddress = values[4];
+                                                state = values[5];
+                                            } else {
+                                                System.err.println("Warning, cannot parse line: " + line);
+                                                proto = null;
+                                                localAddress = null;
+                                                foreignAddress = null;
+                                                state = null;
                                             }
-                                        } else {
-                                            System.err.println("Warning, cannot parse line: " + line);
+                                        }
+                                        if(
+                                            proto!=null
+                                            && proto.equalsIgnoreCase("TCP")
+                                            && state.equalsIgnoreCase("ESTABLISHED")
+                                        ) {
+                                            int colonPos = localAddress.lastIndexOf(':');
+                                            if(colonPos!=-1) {
+                                                int localPort = Integer.parseInt(localAddress.substring(colonPos+1));
+                                                if(localPorts.contains(localPort)) {
+                                                    colonPos = foreignAddress.lastIndexOf(':');
+                                                    if(colonPos!=-1) {
+                                                        uniqueIPs.add(IPAddress.getIntForIPAddress(foreignAddress.substring(0, colonPos)));
+                                                    } else {
+                                                        System.err.println("Warning, cannot parse line: " + line);
+                                                    }
+                                                }
+                                            } else {
+                                                System.err.println("Warning, cannot parse line: " + line);
+                                            }
                                         }
                                     }
                                 }
