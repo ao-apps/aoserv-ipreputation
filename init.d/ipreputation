@@ -1,0 +1,53 @@
+#!/bin/bash
+#
+#       /etc/init.d/ipreputation
+#
+# Starts the IP Reputation Daemon
+#
+# chkconfig: - 98 02
+# description: ipreputation
+
+RETVAL=0
+
+BIN='/opt/ipreputation'
+VAR='/var/opt/ipreputation'
+PID='/var/run/ipreputation.pid'
+
+#
+#       See how we were called.
+#
+case "$1" in
+  start)
+        # Check if already running
+        if [ ! -f "$PID" ]; then
+            echo -n "Starting ipreputation: "
+	    cd "$BIN"
+	    nohup \
+		su \
+		-s /bin/sh \
+		-c "exec java -classpath classes:conf:lib/aocode-public.jar:lib/aoserv-client.jar:lib/ipreputation.jar com.aoindustries.ipreputation.IpReputationDaemon" \
+		ipreputation \
+		>& "$VAR/ipreputation.log" &
+	    echo "$!" > "$PID"
+	    echo "Done"
+        fi
+        ;;
+  stop)
+        if [ -f "$PID" ]; then
+            echo -n "Stopping ipreputation: "
+	    kill `cat "$PID"`
+            rm -f "$PID"
+	    echo "Done"
+        fi
+        ;;
+  reload|restart)
+        "$0" stop
+        "$0" start
+        RETVAL=$?
+        ;;
+  *)
+        echo "Usage: /etc/init.d/ipreputation {start|stop|restart|reload}"
+        exit 1
+esac
+
+exit $RETVAL
