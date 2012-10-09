@@ -1,110 +1,109 @@
+/*
+ * Copyright 2012 by AO Industries, Inc.,
+ * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
+ * All rights reserved.
+ */
 package com.aoindustries.ipreputation;
 
 import com.aoindustries.aoserv.client.AOServConnector;
-import com.aoindustries.aoserv.client.IPAddress;
-import com.aoindustries.aoserv.client.IpReputationSet;
-import com.aoindustries.lang.ProcessResult;
-import com.aoindustries.util.StringUtility;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 public class IpReputationDaemon {
 
-	private static final long CHECK_INTERVAL = 30000L;
-	private static final long ERROR_SLEEP = 30000L;
-	private static final String SET_NAME = "xlite_users_43594";
-	private static final int LOCAL_PORT = 43594;
-	private static final IpReputationSet.ConfidenceType CONFIDENCE_TYPE = IpReputationSet.ConfidenceType.UNCERTAIN;
-	private static final IpReputationSet.ReputationType REPUTATION_TYPE = IpReputationSet.ReputationType.GOOD;
-	private static final short SCORE = 1;
+    private static final Logger logger = Logger.getLogger(IpReputationDaemon.class.getName());
 
-	private static final Logger logger = Logger.getLogger(IpReputationDaemon.class.getName());
+    private static final long ERROR_SLEEP = 30000L;
 
-	private static final String[] command = {
-		"netstat",
-		"-n",
-		"-p",
-		"TCP"
-	};
+    private static final String CONF_RESOURCE = "/com/aoindustries/ipreputation/ipreputation.properties";
 
-	public static void main(String[] args) {
-		final String portEnding = ":" + LOCAL_PORT;
-		final Set<Integer> uniqueIPs = new LinkedHashSet<Integer>();
-		final List<IpReputationSet.AddReputation> newReputations = new ArrayList<IpReputationSet.AddReputation>();
-		while(true) {
-			try {
-				// Get AOServConnector with settings in properties file
-				AOServConnector conn = AOServConnector.getConnector(logger);
-				
-				// Find the reputation set
-				IpReputationSet reputationSet = conn.getIpReputationSets().get(SET_NAME);
-				if(reputationSet==null) throw new NullPointerException("IP Reputation Set not found: " + SET_NAME);
-				while(true) {
-					ProcessResult result = ProcessResult.exec(command);
-					int exitVal = result.getExitVal();
-					if(exitVal!=0) throw new IOException("Non-zero exit value: " + exitVal +".  stderr=" + result.getStderr());
-					uniqueIPs.clear();
-					for(String line : StringUtility.splitLines(result.getStdout())) {
-						line = line.trim();
-						if(
-							line.length()>0
-							&& !line.startsWith("Active Connections")
-							&& !line.startsWith("Proto")
-						) {
-							String[] values = StringUtility.splitString(line);
-							if(values.length==4) {
-								String proto = values[0];
-								String localAddress = values[1];
-								String foreignAddress = values[2];
-								String state = values[3];
-								if(
-									proto.equals("TCP")
-									&& localAddress.endsWith(portEnding)
-									&& state.equals("ESTABLISHED")
-								) {
-									int colonPos = foreignAddress.indexOf(':');
-									if(colonPos!=-1) {
-										uniqueIPs.add(IPAddress.getIntForIPAddress(foreignAddress.substring(0, colonPos)));
-									} else {
-										System.err.println("Warning, cannot parse line: " + line);
-									}
-								}
-							} else {
-								System.err.println("Warning, cannot parse line: " + line);
-							}
-						}
-					}
-					// Make API call to add reputations
-					System.out.println("Adding " + uniqueIPs.size() + " new reputations");
-					newReputations.clear();
-					for(Integer ip : uniqueIPs) {
-						newReputations.add(
-							new IpReputationSet.AddReputation(
-								ip,
-								CONFIDENCE_TYPE,
-								REPUTATION_TYPE,
-								SCORE
-							)
-						);
-					}
-					reputationSet.addReputation(newReputations);
-					// Sleep and then repeat
-					Thread.sleep(CHECK_INTERVAL);
-				}
-			} catch(ThreadDeath TD) {
-				throw TD;
-			} catch(Throwable T) {
-				T.printStackTrace();
-				try {
-					Thread.sleep(ERROR_SLEEP);
-				} catch(InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+    public static void main(String[] args) {
+        try {
+            // Each monitor will only be started once, even during retry
+            final List<IpReputationMonitor> monitors = new ArrayList<IpReputationMonitor>();
+            boolean started = false;
+            while(!started) {
+                try {
+                    // Get AOServConnector with settings in properties file
+                    AOServConnector conn = AOServConnector.getConnector(logger);
+
+                    // Parse the properties file and start the monitors
+                    Properties config = new Properties();
+                    {
+                        InputStream in = IpReputationDaemon.class.getResourceAsStream(CONF_RESOURCE);
+                        if(in==null) throw new IOException("Unable to find configuration properties file on classpath: " + CONF_RESOURCE);
+                        try {
+                            config.load(in);
+                        } finally {
+                            in.close();
+                        }
+                    }
+
+                    boolean hasError = false;
+                    for(int num=1; num<Integer.MAX_VALUE; num++) {
+                        String className = config.getProperty("ipreputation.monitor." + num + ".className");
+                        if(className==null) break;
+                        while(monitors.size()<num) monitors.add(null);
+                        if(monitors.get(num-1)==null) {
+                            try {
+                                Class<? extends IpReputationMonitor> clazz = Class.forName(className).asSubclass(IpReputationMonitor.class);
+                                Constructor<? extends IpReputationMonitor> constructor = clazz.getConstructor(AOServConnector.class, Properties.class, Integer.TYPE);
+                                IpReputationMonitor monitor = constructor.newInstance(conn, config, num);
+                                monitor.start();
+                                monitors.set(num-1, monitor);
+                            } catch(ThreadDeath TD) {
+                                throw TD;
+                            } catch(Throwable T) {
+                                // Catch any errors on each monitoring, starting-up those that can still start
+                                T.printStackTrace(System.err);
+                                hasError = true;
+                            }
+                        }
+                    }
+                    if(hasError) {
+                        try {
+                            Thread.sleep(ERROR_SLEEP);
+                        } catch(InterruptedException e) {
+                            e.printStackTrace(System.err);
+                        }
+                    } else {
+                        // Allow main method to exit
+                        started = true;
+                    }
+                } catch(ThreadDeath TD) {
+                    throw TD;
+                } catch(Throwable T) {
+                    T.printStackTrace(System.err);
+                    try {
+                        Thread.sleep(ERROR_SLEEP);
+                    } catch(InterruptedException e) {
+                        e.printStackTrace(System.err);
+                    }
+                }
+            }
+            if(monitors.isEmpty()) {
+                throw new IllegalStateException("No monitors defined");
+            }
+        } catch(ThreadDeath TD) {
+            throw TD;
+        } catch(Throwable T) {
+            T.printStackTrace(System.err);
+            try {
+                Thread.sleep(ERROR_SLEEP);
+            } catch(InterruptedException e) {
+                e.printStackTrace(System.err);
+            }
+        }
+    }
+
+    /**
+     * Make no instances.
+     */
+    private IpReputationDaemon() {
+    }
 }

@@ -1,0 +1,29 @@
+#######################################
+#                                     #
+#           NetstatMonitor            #
+#                                     #
+# Any established connection is added #
+#                                     #
+#######################################
+ipreputation.monitor.1.className=com.aoindustries.ipreputation.NetstatMonitor
+
+# The name of the reputation set that will be affected (required)
+ipreputation.monitor.1.setName=${SET_NAME}
+
+# The comma-separated list of local ports the services are running on (required)
+ipreputation.monitor.1.localPorts=${PORT1}, ${PORT2}
+
+# The number of milliseconds between each scan of netstat, defaults to 30000
+#ipreputation.monitor.1.checkInterval=30000
+
+# The number of milliseconds to wait after an error, defaults to 30000
+#ipreputation.monitor.1.errorSleep=30000
+
+# The confidence type, one of "Uncertain" or "Definite", defaults to "Uncertain"
+#ipreputation.monitor.1.confidenceType=Uncertain
+
+# The reputation type, one of "Good" or "Bad", defaults to "Good"
+#ipreputation.monitor.1.reputationType=Good
+
+# The score added for each scan, defaults to 1
+#ipreputation.monitor.1.score=1
