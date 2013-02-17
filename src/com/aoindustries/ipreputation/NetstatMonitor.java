@@ -39,6 +39,7 @@ public class NetstatMonitor extends IpReputationMonitor {
 
     private final String setName;
     private final Set<Integer> localPorts;
+    private final boolean debug;
     private final long checkInterval;
     private final long errorSleep;
     private final IpReputationSet.ConfidenceType confidenceType;
@@ -61,6 +62,13 @@ public class NetstatMonitor extends IpReputationMonitor {
         }
         if(newLocalPorts.isEmpty()) throw new IllegalArgumentException(localPortsProperty + " required");
         localPorts = Collections.unmodifiableSet(newLocalPorts);
+        // debug
+        debug = Boolean.parseBoolean(
+            config.getProperty(
+                "ipreputation.monitor." + num + ".debug",
+                "false"
+            )
+        );
         // checkInterval
         checkInterval = Long.parseLong(
             config.getProperty(
@@ -162,7 +170,9 @@ public class NetstatMonitor extends IpReputationMonitor {
                                                 if(localPorts.contains(localPort)) {
                                                     colonPos = foreignAddress.lastIndexOf(':');
                                                     if(colonPos!=-1) {
-                                                        uniqueIPs.add(IPAddress.getIntForIPAddress(foreignAddress.substring(0, colonPos)));
+                                                        String ip = foreignAddress.substring(0, colonPos);
+                                                        if(debug) System.out.println("Parsing " + ip);
+                                                        uniqueIPs.add(IPAddress.getIntForIPAddress(ip));
                                                     } else {
                                                         System.err.println("Warning, cannot parse line: " + line);
                                                     }
@@ -174,7 +184,7 @@ public class NetstatMonitor extends IpReputationMonitor {
                                     }
                                 }
                                 // Make API call to add reputations
-                                System.out.println("Adding " + uniqueIPs.size() + " new reputations");
+                                if(debug) System.out.println("Adding " + uniqueIPs.size() + " new reputations");
                                 newReputations.clear();
                                 for(Integer ip : uniqueIPs) {
                                     newReputations.add(
