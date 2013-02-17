@@ -9,6 +9,7 @@ import com.aoindustries.aoserv.client.AOServConnector;
 import com.aoindustries.aoserv.client.IPAddress;
 import com.aoindustries.aoserv.client.IpReputationSet;
 import com.aoindustries.io.LogFollower;
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -154,7 +155,7 @@ public class LogMonitor extends IpReputationMonitor {
             while(true) {
                 try {
                     // Open the log for following
-                    BufferedReader log = new BufferedReader(new InputStreamReader(new LogFollower(path, pollInterval), charset));
+                    BufferedReader log = new BufferedReader(new InputStreamReader(new BufferedInputStream(new LogFollower(path, pollInterval)), charset));
                     try {
                         // Read one line at a time
                         String line;
