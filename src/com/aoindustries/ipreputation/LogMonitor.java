@@ -152,6 +152,7 @@ public class LogMonitor extends IpReputationMonitor {
 
         @Override
         public void run() {
+            int matchCount = 0;
             while(true) {
                 try {
                     // Open the log for following
@@ -163,7 +164,8 @@ public class LogMonitor extends IpReputationMonitor {
                             Matcher m = pattern.matcher(line);
                             if(m.matches()) {
                                 String matched = m.group(group);
-                                if(debug) System.out.println("Matched "+matched);
+                                matchCount++;
+                                if(debug) System.out.println("Matched "+matchCount+": "+matched);
                                 try {
                                     QueueEntry entry = new QueueEntry(
                                         IPAddress.getIntForIPAddress(matched)
