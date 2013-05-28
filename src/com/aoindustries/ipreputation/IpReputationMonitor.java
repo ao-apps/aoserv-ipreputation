@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 by AO Industries, Inc.,
+ * Copyright 2012-2013 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
@@ -11,12 +11,14 @@ import java.util.Properties;
 abstract public class IpReputationMonitor {
 
     final protected AOServConnector conn;
+    final protected int num;
 
     /**
      * All implementations must have a public constructor with these same parameters.
      */
     protected IpReputationMonitor(AOServConnector conn, Properties config, int num) {
         this.conn = conn;
+        this.num = num;
     }
 
     /**

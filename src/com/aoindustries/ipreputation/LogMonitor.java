@@ -165,7 +165,7 @@ public class LogMonitor extends IpReputationMonitor {
                             if(m.matches()) {
                                 String matched = m.group(group);
                                 matchCount++;
-                                if(debug) System.out.println("Matched "+matchCount+": "+matched);
+                                if(debug) System.out.println(num+": Matched "+matchCount+": "+matched);
                                 try {
                                     QueueEntry entry = new QueueEntry(
                                         IPAddress.getIntForIPAddress(matched)
@@ -243,7 +243,7 @@ public class LogMonitor extends IpReputationMonitor {
                         }
 
                         // Make API call to add reputations
-                        if(debug) System.out.println("Adding " + ipScores.size() + " new reputations");
+                        if(debug) System.out.println(num+": Adding " + ipScores.size() + " new reputations to "+setName);
                         newReputations.clear();
                         for(Map.Entry<Integer,Short> entry : ipScores.entrySet()) {
                             newReputations.add(

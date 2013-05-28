@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 by AO Industries, Inc.,
+ * Copyright 2012-2013 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
@@ -152,7 +152,7 @@ public class NetstatMonitor extends IpReputationMonitor {
                                                 foreignAddress = values[4];
                                                 state = values[5];
                                             } else {
-                                                System.err.println("Warning, cannot parse line: " + line);
+                                                System.err.println(num+": Warning, cannot parse line: " + line);
                                                 proto = null;
                                                 localAddress = null;
                                                 foreignAddress = null;
@@ -171,20 +171,20 @@ public class NetstatMonitor extends IpReputationMonitor {
                                                     colonPos = foreignAddress.lastIndexOf(':');
                                                     if(colonPos!=-1) {
                                                         String ip = foreignAddress.substring(0, colonPos);
-                                                        if(debug) System.out.println("Parsing " + ip);
+                                                        if(debug) System.out.println(num+": Parsing " + ip);
                                                         uniqueIPs.add(IPAddress.getIntForIPAddress(ip));
                                                     } else {
-                                                        System.err.println("Warning, cannot parse line: " + line);
+                                                        System.err.println(num+": Warning, cannot parse line: " + line);
                                                     }
                                                 }
                                             } else {
-                                                System.err.println("Warning, cannot parse line: " + line);
+                                                System.err.println(num+": Warning, cannot parse line: " + line);
                                             }
                                         }
                                     }
                                 }
                                 // Make API call to add reputations
-                                if(debug) System.out.println("Adding " + uniqueIPs.size() + " new reputations");
+                                if(debug) System.out.println(num+": Adding " + uniqueIPs.size() + " new reputations to "+setName);
                                 newReputations.clear();
                                 for(Integer ip : uniqueIPs) {
                                     newReputations.add(
