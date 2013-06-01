@@ -1,13 +1,12 @@
 /*
- * Copyright 2012 by AO Industries, Inc.,
+ * Copyright 2012-2013 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
 package com.aoindustries.ipreputation;
 
 import com.aoindustries.aoserv.client.AOServConnector;
-import java.io.IOException;
-import java.io.InputStream;
+import com.aoindustries.util.PropertiesUtils;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,16 +32,7 @@ public class IpReputationDaemon {
                     AOServConnector conn = AOServConnector.getConnector(logger);
 
                     // Parse the properties file and start the monitors
-                    Properties config = new Properties();
-                    {
-                        InputStream in = IpReputationDaemon.class.getResourceAsStream(CONF_RESOURCE);
-                        if(in==null) throw new IOException("Unable to find configuration properties file on classpath: " + CONF_RESOURCE);
-                        try {
-                            config.load(in);
-                        } finally {
-                            in.close();
-                        }
-                    }
+                    Properties config = PropertiesUtils.loadFromResource(IpReputationDaemon.class, CONF_RESOURCE);
 
                     boolean hasError = false;
                     for(int num=1; num<Integer.MAX_VALUE; num++) {
