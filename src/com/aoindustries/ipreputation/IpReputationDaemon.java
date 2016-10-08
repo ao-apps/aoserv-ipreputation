@@ -60,6 +60,8 @@ public class IpReputationDaemon {
                             Thread.sleep(ERROR_SLEEP);
                         } catch(InterruptedException e) {
                             e.printStackTrace(System.err);
+							// Restore the interrupted status
+							Thread.currentThread().interrupt();
                         }
                     } else {
                         // Allow main method to exit
@@ -73,6 +75,8 @@ public class IpReputationDaemon {
                         Thread.sleep(ERROR_SLEEP);
                     } catch(InterruptedException e) {
                         e.printStackTrace(System.err);
+						// Restore the interrupted status
+						Thread.currentThread().interrupt();
                     }
                 }
             }
@@ -87,6 +91,8 @@ public class IpReputationDaemon {
                 Thread.sleep(ERROR_SLEEP);
             } catch(InterruptedException e) {
                 e.printStackTrace(System.err);
+				// Restore the interrupted status
+				Thread.currentThread().interrupt();
             }
         }
     }

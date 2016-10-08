@@ -189,6 +189,8 @@ public class LogMonitor extends IpReputationMonitor {
                         Thread.sleep(errorSleep);
                     } catch(InterruptedException e) {
                         e.printStackTrace(System.err);
+						// Restore the interrupted status
+						Thread.currentThread().interrupt();
                     }
                 }
             }
@@ -265,6 +267,8 @@ public class LogMonitor extends IpReputationMonitor {
                         Thread.sleep(errorSleep);
                     } catch(InterruptedException e) {
                         e.printStackTrace(System.err);
+						// Restore the interrupted status
+						Thread.currentThread().interrupt();
                     }
                 }
             }
