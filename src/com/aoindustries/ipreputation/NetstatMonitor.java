@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2013 by AO Industries, Inc.,
+ * Copyright 2012-2013, 2018 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
@@ -208,14 +208,12 @@ public class NetstatMonitor extends IpReputationMonitor {
                                 Thread.sleep(errorSleep);
                             } catch(InterruptedException e) {
                                 e.printStackTrace(System.err);
-								// Restore the interrupted status
-								Thread.currentThread().interrupt();
                             }
                         }
                     }
                 }
             },
-            NetstatMonitor.class.getName()+" " + localPorts +" -> " + setName
+            NetstatMonitor.class.getName() + " " + localPorts + " -> " + setName
         );
         thread.start();
     }
