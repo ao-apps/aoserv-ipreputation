@@ -6,8 +6,8 @@
 package com.aoindustries.ipreputation;
 
 import com.aoindustries.aoserv.client.AOServConnector;
-import com.aoindustries.aoserv.client.IPAddress;
-import com.aoindustries.aoserv.client.IpReputationSet;
+import com.aoindustries.aoserv.client.net.IpAddress;
+import com.aoindustries.aoserv.client.net.reputation.Set;
 import com.aoindustries.io.LogFollower;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -40,8 +40,8 @@ public class LogMonitor extends IpReputationMonitor {
     private final boolean coalesce;
     private final Charset charset;
     private final long errorSleep;
-    private final IpReputationSet.ConfidenceType confidenceType;
-    private final IpReputationSet.ReputationType reputationType;
+    private final Set.ConfidenceType confidenceType;
+    private final Set.ReputationType reputationType;
     private final Short score;
 
     public LogMonitor(AOServConnector conn, Properties config, int num) {
@@ -105,17 +105,17 @@ public class LogMonitor extends IpReputationMonitor {
             )
         );
         // confidenceType
-        confidenceType = IpReputationSet.ConfidenceType.valueOf(
+        confidenceType = Set.ConfidenceType.valueOf(
             config.getProperty(
                 "ipreputation.monitor." + num + ".confidenceType",
-                IpReputationSet.ConfidenceType.UNCERTAIN.name()
+                Set.ConfidenceType.UNCERTAIN.name()
             ).toUpperCase(Locale.ENGLISH)
         );
         // reputationType
-        reputationType = IpReputationSet.ReputationType.valueOf(
+        reputationType = Set.ReputationType.valueOf(
             config.getProperty(
                 "ipreputation.monitor." + num + ".reputationType",
-                IpReputationSet.ReputationType.GOOD.name()
+                Set.ReputationType.GOOD.name()
             ).toUpperCase(Locale.ENGLISH)
         );
         // score
@@ -168,7 +168,7 @@ public class LogMonitor extends IpReputationMonitor {
                                 if(debug) System.out.println(num+": Matched "+matchCount+": "+matched);
                                 try {
                                     QueueEntry entry = new QueueEntry(
-                                        IPAddress.getIntForIPAddress(matched)
+                                        IpAddress.getIntForIPAddress(matched)
                                     );
                                     synchronized(buffer) {
                                         buffer.add(entry);
@@ -208,14 +208,14 @@ public class LogMonitor extends IpReputationMonitor {
         public void run() {
             final Map<Integer,Short> ipScores = new LinkedHashMap<Integer,Short>();
             final List<QueueEntry> snapshot = new ArrayList<QueueEntry>();
-            final List<IpReputationSet.AddReputation> newReputations = new ArrayList<IpReputationSet.AddReputation>();
+            final List<Set.AddReputation> newReputations = new ArrayList<Set.AddReputation>();
             while(true) {
                 try {
                     // Get AOServConnector with settings in properties file
                     AOServConnector conn = AOServConnector.getConnector(logger);
 
                     // Find the reputation set
-                    IpReputationSet reputationSet = conn.getIpReputationSets().get(setName);
+                    Set reputationSet = conn.getIpReputationSets().get(setName);
                     if(reputationSet==null) throw new NullPointerException("IP Reputation Set not found: " + setName);
 
                     while(true) {
@@ -247,7 +247,7 @@ public class LogMonitor extends IpReputationMonitor {
                         newReputations.clear();
                         for(Map.Entry<Integer,Short> entry : ipScores.entrySet()) {
                             newReputations.add(
-                                new IpReputationSet.AddReputation(
+                                new Set.AddReputation(
                                     entry.getKey(),
                                     confidenceType,
                                     reputationType,

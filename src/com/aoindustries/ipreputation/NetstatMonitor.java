@@ -6,8 +6,8 @@
 package com.aoindustries.ipreputation;
 
 import com.aoindustries.aoserv.client.AOServConnector;
-import com.aoindustries.aoserv.client.IPAddress;
-import com.aoindustries.aoserv.client.IpReputationSet;
+import com.aoindustries.aoserv.client.net.IpAddress;
+import com.aoindustries.aoserv.client.net.reputation.Set;
 import com.aoindustries.lang.ProcessResult;
 import com.aoindustries.util.StringUtility;
 import java.io.IOException;
@@ -17,7 +17,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Logger;
 
 public class NetstatMonitor extends IpReputationMonitor {
@@ -38,12 +37,12 @@ public class NetstatMonitor extends IpReputationMonitor {
     };
 
     private final String setName;
-    private final Set<Integer> localPorts;
+    private final java.util.Set<Integer> localPorts;
     private final boolean debug;
     private final long checkInterval;
     private final long errorSleep;
-    private final IpReputationSet.ConfidenceType confidenceType;
-    private final IpReputationSet.ReputationType reputationType;
+    private final Set.ConfidenceType confidenceType;
+    private final Set.ReputationType reputationType;
     private final short score;
 
     public NetstatMonitor(AOServConnector conn, Properties config, int num) {
@@ -56,7 +55,7 @@ public class NetstatMonitor extends IpReputationMonitor {
         String localPortsProperty = "ipreputation.monitor." + num + ".localPorts";
         String localPortsValue = config.getProperty(localPortsProperty);
         if(localPortsValue==null) throw new IllegalArgumentException(localPortsProperty + " required");
-        Set<Integer> newLocalPorts = new LinkedHashSet<Integer>();
+        java.util.Set<Integer> newLocalPorts = new LinkedHashSet<Integer>();
         for(String value : StringUtility.splitStringCommaSpace(localPortsValue)) {
             newLocalPorts.add(Integer.parseInt(value.trim()));
         }
@@ -84,17 +83,17 @@ public class NetstatMonitor extends IpReputationMonitor {
             )
         );
         // confidenceType
-        confidenceType = IpReputationSet.ConfidenceType.valueOf(
+        confidenceType = Set.ConfidenceType.valueOf(
             config.getProperty(
                 "ipreputation.monitor." + num + ".confidenceType",
-                IpReputationSet.ConfidenceType.UNCERTAIN.name()
+                Set.ConfidenceType.UNCERTAIN.name()
             ).toUpperCase(Locale.ENGLISH)
         );
         // reputationType
-        reputationType = IpReputationSet.ReputationType.valueOf(
+        reputationType = Set.ReputationType.valueOf(
             config.getProperty(
                 "ipreputation.monitor." + num + ".reputationType",
-                IpReputationSet.ReputationType.GOOD.name()
+                Set.ReputationType.GOOD.name()
             ).toUpperCase(Locale.ENGLISH)
         );
         // score
@@ -113,15 +112,15 @@ public class NetstatMonitor extends IpReputationMonitor {
             new Runnable() {
                 @Override
                 public void run() {
-                    final Set<Integer> uniqueIPs = new LinkedHashSet<Integer>();
-                    final List<IpReputationSet.AddReputation> newReputations = new ArrayList<IpReputationSet.AddReputation>();
+                    final java.util.Set<Integer> uniqueIPs = new LinkedHashSet<Integer>();
+                    final List<Set.AddReputation> newReputations = new ArrayList<Set.AddReputation>();
                     while(true) {
                         try {
                             // Get AOServConnector with settings in properties file
                             AOServConnector conn = AOServConnector.getConnector(logger);
 
                             // Find the reputation set
-                            IpReputationSet reputationSet = conn.getIpReputationSets().get(setName);
+                            Set reputationSet = conn.getIpReputationSets().get(setName);
                             if(reputationSet==null) throw new NullPointerException("IP Reputation Set not found: " + setName);
                             while(true) {
                                 ProcessResult result = ProcessResult.exec(isWindows ? windowsCommand : nonWindowsCommand);
@@ -172,7 +171,7 @@ public class NetstatMonitor extends IpReputationMonitor {
                                                     if(colonPos!=-1) {
                                                         String ip = foreignAddress.substring(0, colonPos);
                                                         if(debug) System.out.println(num+": Parsing " + ip);
-                                                        uniqueIPs.add(IPAddress.getIntForIPAddress(ip));
+                                                        uniqueIPs.add(IpAddress.getIntForIPAddress(ip));
                                                     } else {
                                                         System.err.println(num+": Warning, cannot parse line: " + line);
                                                     }
@@ -188,7 +187,7 @@ public class NetstatMonitor extends IpReputationMonitor {
                                 newReputations.clear();
                                 for(Integer ip : uniqueIPs) {
                                     newReputations.add(
-                                        new IpReputationSet.AddReputation(
+                                        new Set.AddReputation(
                                             ip,
                                             confidenceType,
                                             reputationType,
