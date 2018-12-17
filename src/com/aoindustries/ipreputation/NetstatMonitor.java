@@ -120,7 +120,7 @@ public class NetstatMonitor extends IpReputationMonitor {
                             AOServConnector conn = AOServConnector.getConnector(logger);
 
                             // Find the reputation set
-                            Set reputationSet = conn.getIpReputationSets().get(setName);
+                            Set reputationSet = conn.getNet().getReputation().getSet().get(setName);
                             if(reputationSet==null) throw new NullPointerException("IP Reputation Set not found: " + setName);
                             while(true) {
                                 ProcessResult result = ProcessResult.exec(isWindows ? windowsCommand : nonWindowsCommand);
