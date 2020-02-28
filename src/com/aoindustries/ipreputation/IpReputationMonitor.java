@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2013 by AO Industries, Inc.,
+ * Copyright 2012-2013, 2020 by AO Industries, Inc.,
  * 7262 Bull Pen Cir, Mobile, Alabama, 36695, U.S.A.
  * All rights reserved.
  */
@@ -10,23 +10,23 @@ import java.util.Properties;
 
 abstract public class IpReputationMonitor {
 
-    final protected AOServConnector conn;
-    final protected int num;
+	final protected AOServConnector conn;
+	final protected int num;
 
-    /**
-     * All implementations must have a public constructor with these same parameters.
-     */
-    protected IpReputationMonitor(AOServConnector conn, Properties config, int num) {
-        this.conn = conn;
-        this.num = num;
-    }
+	/**
+	 * All implementations must have a public constructor with these same parameters.
+	 */
+	protected IpReputationMonitor(AOServConnector conn, Properties config, int num) {
+		this.conn = conn;
+		this.num = num;
+	}
 
-    /**
-     * Starts this monitor, must return quickly while monitor runs in non-daemon
-     * background thread.  Monitors are never stopped.
-     *
-     * @throw  Exception if failed to start.
-     */
-    public void start() {
-    }
+	/**
+	 * Starts this monitor, must return quickly while monitor runs in non-daemon
+	 * background thread.  Monitors are never stopped.
+	 *
+	 * @throw  Exception if failed to start.
+	 */
+	public void start() {
+	}
 }
