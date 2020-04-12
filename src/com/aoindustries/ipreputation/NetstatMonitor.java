@@ -9,7 +9,7 @@ import com.aoindustries.aoserv.client.AOServConnector;
 import com.aoindustries.aoserv.client.net.IpAddress;
 import com.aoindustries.aoserv.client.net.reputation.Set;
 import com.aoindustries.lang.ProcessResult;
-import com.aoindustries.util.StringUtility;
+import com.aoindustries.lang.Strings;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class NetstatMonitor extends IpReputationMonitor {
 		String localPortsValue = config.getProperty(localPortsProperty);
 		if(localPortsValue==null) throw new IllegalArgumentException(localPortsProperty + " required");
 		java.util.Set<Integer> newLocalPorts = new LinkedHashSet<>();
-		for(String value : StringUtility.splitStringCommaSpace(localPortsValue)) {
+		for(String value : Strings.splitCommaSpace(localPortsValue)) {
 			newLocalPorts.add(Integer.parseInt(value.trim()));
 		}
 		if(newLocalPorts.isEmpty()) throw new IllegalArgumentException(localPortsProperty + " required");
@@ -125,7 +125,7 @@ public class NetstatMonitor extends IpReputationMonitor {
 								int exitVal = result.getExitVal();
 								if(exitVal!=0) throw new IOException("Non-zero exit value: " + exitVal +".  stderr=" + result.getStderr());
 								uniqueIPs.clear();
-								for(String line : StringUtility.splitLines(result.getStdout())) {
+								for(String line : Strings.split(result.getStdout())) {
 									line = line.trim();
 									if(
 										line.length()>0
@@ -137,7 +137,7 @@ public class NetstatMonitor extends IpReputationMonitor {
 										final String foreignAddress;
 										final String state;
 										{
-											String[] values = StringUtility.splitString(line);
+											String[] values = Strings.split(line);
 											if(values.length==4) {
 												proto = values[0];
 												localAddress = values[1];
