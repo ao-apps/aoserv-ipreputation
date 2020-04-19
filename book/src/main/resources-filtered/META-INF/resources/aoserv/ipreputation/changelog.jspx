@@ -55,6 +55,10 @@ along with aoserv-ipreputation.  If not, see <http://www.gnu.org/licenses />.
 				<ul>
 					<li>Project moved to GitHub and Maven.</li>
 					<li>Updated to Java 8 coding standards.</li>
+					<!-- TODO:
+					<li>Update wrapper-windows-x86</li>
+					<li>Create a task to look for updates, too</li>
+					-->
 				</ul>
 			</changelog:release>
 		</c:if>
