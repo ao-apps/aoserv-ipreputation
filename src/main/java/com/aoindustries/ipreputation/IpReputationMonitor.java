@@ -24,8 +24,6 @@ abstract public class IpReputationMonitor {
 	/**
 	 * Starts this monitor, must return quickly while monitor runs in non-daemon
 	 * background thread.  Monitors are never stopped.
-	 *
-	 * @throw  Exception if failed to start.
 	 */
 	public void start() {
 	}
