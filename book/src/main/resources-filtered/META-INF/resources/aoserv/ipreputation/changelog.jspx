@@ -58,6 +58,7 @@ along with aoserv-ipreputation.  If not, see <http://www.gnu.org/licenses />.
 					<!-- TODO:
 					<li>Update wrapper-windows-x86</li>
 					<li>Create a task to look for updates, too</li>
+					<li>Build assemblies with assembly plugin</li>
 					-->
 				</ul>
 			</changelog:release>
