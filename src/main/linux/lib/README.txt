@@ -21,4 +21,4 @@
 # along with aoserv-ipreputation.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-Any installation-specific classes may be added here.
+JAR files, including any installation-specific JARs.
