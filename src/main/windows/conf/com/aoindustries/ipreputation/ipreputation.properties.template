@@ -1,0 +1,83 @@
+##############################################
+#                                            #
+#                 LogMonitor                 #
+#                                            #
+# Parses a log file with regular expressions #
+#                                            #
+##############################################
+ipreputation.monitor.1.className=com.aoindustries.ipreputation.LogMonitor
+
+# The name of the reputation set that will be affected (required)
+ipreputation.monitor.1.setName=${SET_NAME}
+
+# The path of the log file to follow (required)
+ipreputation.monitor.1.path=${PATH}
+
+# The regular expression used to match the IP addresses (required)
+ipreputation.monitor.1.pattern=${PATTERN}
+
+# The group within the regular expression used to get the IP address, defaults to 0 (the entire pattern match)
+#ipreputation.monitor.1.group=0
+
+# Enables more verbose debugging, defaults to false
+#ipreputation.monitor.1.debug=false
+
+# The number of milliseconds between each check of log file, defaults to 5000 (5 seconds)
+#ipreputation.monitor.1.checkInterval=5000
+
+# The number of milliseconds between commits of reputation data, defaults to 30000 (30 seconds)
+#ipreputation.monitor.1.commitInterval=30000
+
+# Enables coalescing of IP reputation across commit boundaries.  When enabled, an IP address
+# will only be counted once within each commit.  Defaults to false (reputation for each occurrence)
+#ipreputation.monitor.1.coalesce=false
+
+# The charset of the log file.  Defaults to the system default character set.
+#ipreputation.monitor.1.charset=
+
+# The number of milliseconds to wait after an error, defaults to 30000 (30 seconds)
+#ipreputation.monitor.1.errorSleep=30000
+
+# The confidence type, one of "Uncertain" or "Definite", defaults to "Uncertain"
+#ipreputation.monitor.1.confidenceType=Uncertain
+
+# The reputation type, one of "Good" or "Bad", defaults to "Good"
+#ipreputation.monitor.1.reputationType=Good
+
+# The score added for each match (or commit when coalesce enabled), defaults to 1
+#ipreputation.monitor.1.score=1
+
+
+########################################################
+#                                                      #
+#                    NetstatMonitor                    #
+#                                                      #
+# Any established connection is added.  This is most   #
+# useful for services with persistent TCP connections. #
+#                                                      #
+########################################################
+ipreputation.monitor.2.className=com.aoindustries.ipreputation.NetstatMonitor
+
+# The name of the reputation set that will be affected (required)
+ipreputation.monitor.2.setName=${SET_NAME}
+
+# The comma-separated list of local ports the services are running on (required)
+ipreputation.monitor.2.localPorts=${PORT1}, ${PORT2}
+
+# Enables more verbose debugging, defaults to false
+#ipreputation.monitor.2.debug=false
+
+# The number of milliseconds between each scan of netstat, defaults to 30000 (30 seconds)
+#ipreputation.monitor.2.checkInterval=30000
+
+# The number of milliseconds to wait after an error, defaults to 30000 (30 seconds)
+#ipreputation.monitor.2.errorSleep=30000
+
+# The confidence type, one of "Uncertain" or "Definite", defaults to "Uncertain"
+#ipreputation.monitor.2.confidenceType=Uncertain
+
+# The reputation type, one of "Good" or "Bad", defaults to "Good"
+#ipreputation.monitor.2.reputationType=Good
+
+# The score added for each scan, defaults to 1
+#ipreputation.monitor.2.score=1
