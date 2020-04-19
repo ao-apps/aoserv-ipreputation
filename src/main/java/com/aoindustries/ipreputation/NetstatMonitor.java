@@ -107,106 +107,103 @@ public class NetstatMonitor extends IpReputationMonitor {
 	public void start() {
 		final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("windows");
 		Thread thread = new Thread(
-			new Runnable() {
-				@Override
-				public void run() {
-					final java.util.Set<Integer> uniqueIPs = new LinkedHashSet<>();
-					final List<Set.AddReputation> newReputations = new ArrayList<>();
-					while(true) {
-						try {
-							// Get AOServConnector with settings in properties file
-							AOServConnector conn = AOServConnector.getConnector();
+			() -> {
+				final java.util.Set<Integer> uniqueIPs = new LinkedHashSet<>();
+				final List<Set.AddReputation> newReputations = new ArrayList<>();
+				while(true) {
+					try {
+						// Get AOServConnector with settings in properties file
+						AOServConnector _conn = AOServConnector.getConnector();
 
-							// Find the reputation set
-							Set reputationSet = conn.getNet().getReputation().getSet().get(setName);
-							if(reputationSet==null) throw new NullPointerException("IP Reputation Set not found: " + setName);
-							while(true) {
-								ProcessResult result = ProcessResult.exec(isWindows ? windowsCommand : nonWindowsCommand);
-								int exitVal = result.getExitVal();
-								if(exitVal!=0) throw new IOException("Non-zero exit value: " + exitVal +".  stderr=" + result.getStderr());
-								uniqueIPs.clear();
-								for(String line : Strings.split(result.getStdout())) {
-									line = line.trim();
-									if(
-										line.length()>0
-										&& !line.startsWith("Active ")
-										&& !line.startsWith("Proto ")
-									) {
-										final String proto;
-										final String localAddress;
-										final String foreignAddress;
-										final String state;
-										{
-											String[] values = Strings.split(line);
-											if(values.length==4) {
-												proto = values[0];
-												localAddress = values[1];
-												foreignAddress = values[2];
-												state = values[3];
-											} else if(values.length==6) {
-												proto = values[0];
-												localAddress = values[3];
-												foreignAddress = values[4];
-												state = values[5];
-											} else {
-												System.err.println(num+": Warning, cannot parse line: " + line);
-												proto = null;
-												localAddress = null;
-												foreignAddress = null;
-												state = null;
-											}
+						// Find the reputation set
+						Set reputationSet = _conn.getNet().getReputation().getSet().get(setName);
+						if(reputationSet==null) throw new NullPointerException("IP Reputation Set not found: " + setName);
+						while(true) {
+							ProcessResult result = ProcessResult.exec(isWindows ? windowsCommand : nonWindowsCommand);
+							int exitVal = result.getExitVal();
+							if(exitVal!=0) throw new IOException("Non-zero exit value: " + exitVal +".  stderr=" + result.getStderr());
+							uniqueIPs.clear();
+							for(String line : Strings.split(result.getStdout())) {
+								line = line.trim();
+								if(
+									line.length()>0
+									&& !line.startsWith("Active ")
+									&& !line.startsWith("Proto ")
+								) {
+									final String proto;
+									final String localAddress;
+									final String foreignAddress;
+									final String state;
+									{
+										String[] values = Strings.split(line);
+										if(values.length==4) {
+											proto = values[0];
+											localAddress = values[1];
+											foreignAddress = values[2];
+											state = values[3];
+										} else if(values.length==6) {
+											proto = values[0];
+											localAddress = values[3];
+											foreignAddress = values[4];
+											state = values[5];
+										} else {
+											System.err.println(num+": Warning, cannot parse line: " + line);
+											proto = null;
+											localAddress = null;
+											foreignAddress = null;
+											state = null;
 										}
-										if(
-											proto != null
-											&& proto.equalsIgnoreCase("TCP")
-											&& state != null
-											&& state.equalsIgnoreCase("ESTABLISHED")
-										) {
-											assert localAddress != null;
-											int colonPos = localAddress.lastIndexOf(':');
-											if(colonPos!=-1) {
-												int localPort = Integer.parseInt(localAddress.substring(colonPos+1));
-												if(localPorts.contains(localPort)) {
-													assert foreignAddress != null;
-													colonPos = foreignAddress.lastIndexOf(':');
-													if(colonPos!=-1) {
-														String ip = foreignAddress.substring(0, colonPos);
-														if(debug) System.out.println(num+": Parsing " + ip);
-														uniqueIPs.add(IpAddress.getIntForIPAddress(ip));
-													} else {
-														System.err.println(num+": Warning, cannot parse line: " + line);
-													}
+									}
+									if(
+										proto != null
+										&& proto.equalsIgnoreCase("TCP")
+										&& state != null
+										&& state.equalsIgnoreCase("ESTABLISHED")
+									) {
+										assert localAddress != null;
+										int colonPos = localAddress.lastIndexOf(':');
+										if(colonPos!=-1) {
+											int localPort = Integer.parseInt(localAddress.substring(colonPos+1));
+											if(localPorts.contains(localPort)) {
+												assert foreignAddress != null;
+												colonPos = foreignAddress.lastIndexOf(':');
+												if(colonPos!=-1) {
+													String ip = foreignAddress.substring(0, colonPos);
+													if(debug) System.out.println(num+": Parsing " + ip);
+													uniqueIPs.add(IpAddress.getIntForIPAddress(ip));
+												} else {
+													System.err.println(num+": Warning, cannot parse line: " + line);
 												}
-											} else {
-												System.err.println(num+": Warning, cannot parse line: " + line);
 											}
+										} else {
+											System.err.println(num+": Warning, cannot parse line: " + line);
 										}
 									}
 								}
-								// Make API call to add reputations
-								if(debug) System.out.println(num+": Adding " + uniqueIPs.size() + " new reputations to "+setName);
-								newReputations.clear();
-								for(Integer ip : uniqueIPs) {
-									newReputations.add(
-										new Set.AddReputation(
-											ip,
-											confidenceType,
-											reputationType,
-											score
-										)
-									);
-								}
-								reputationSet.addReputation(newReputations);
-								// Sleep and then repeat
-								Thread.sleep(checkInterval);
 							}
-						} catch(RuntimeException | IOException | InterruptedException | SQLException T) {
-							T.printStackTrace(System.err);
-							try {
-								Thread.sleep(errorSleep);
-							} catch(InterruptedException e) {
-								e.printStackTrace(System.err);
+							// Make API call to add reputations
+							if(debug) System.out.println(num+": Adding " + uniqueIPs.size() + " new reputations to "+setName);
+							newReputations.clear();
+							for(Integer ip : uniqueIPs) {
+								newReputations.add(
+									new Set.AddReputation(
+										ip,
+										confidenceType,
+										reputationType,
+										score
+									)
+								);
 							}
+							reputationSet.addReputation(newReputations);
+							// Sleep and then repeat
+							Thread.sleep(checkInterval);
+						}
+					} catch(RuntimeException | IOException | InterruptedException | SQLException T) {
+						T.printStackTrace(System.err);
+						try {
+							Thread.sleep(errorSleep);
+						} catch(InterruptedException e) {
+							e.printStackTrace(System.err);
 						}
 					}
 				}
