@@ -36,6 +36,7 @@ public class IpReputationDaemon {
 
 	private static final String CONF_RESOURCE = "/com/aoindustries/ipreputation/ipreputation.properties";
 
+	@SuppressWarnings({"UseOfSystemOutOrSystemErr", "SleepWhileInLoop", "TooBroadCatch", "UseSpecificCatch"})
 	public static void main(String[] args) {
 		try {
 			// Each monitor will only be started once, even during retry
@@ -53,7 +54,9 @@ public class IpReputationDaemon {
 					for(int num=1; num<Integer.MAX_VALUE; num++) {
 						String className = config.getProperty("ipreputation.monitor." + num + ".className");
 						if(className==null) break;
-						while(monitors.size()<num) monitors.add(null);
+						while(monitors.size() < num) {
+							monitors.add(null);
+						}
 						if(monitors.get(num-1)==null) {
 							try {
 								Class<? extends IpReputationMonitor> clazz = Class.forName(className).asSubclass(IpReputationMonitor.class);
@@ -90,7 +93,9 @@ public class IpReputationDaemon {
 			if(monitors.isEmpty()) {
 				throw new IllegalStateException("No monitors defined");
 			}
-		} catch(RuntimeException T) {
+		} catch(ThreadDeath TD) {
+			throw TD;
+		} catch(Throwable T) {
 			T.printStackTrace(System.err);
 			try {
 				Thread.sleep(ERROR_SLEEP);

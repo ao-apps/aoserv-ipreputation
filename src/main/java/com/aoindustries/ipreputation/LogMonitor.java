@@ -44,6 +44,7 @@ import java.util.regex.Pattern;
 /**
  * Parses log files line-by-line with regular expression to extract reputation.
  */
+@SuppressWarnings("UseOfSystemOutOrSystemErr")
 public class LogMonitor extends IpReputationMonitor {
 
 	private final String setName;
@@ -167,6 +168,7 @@ public class LogMonitor extends IpReputationMonitor {
 		}
 
 		@Override
+		@SuppressWarnings("SleepWhileInLoop")
 		public void run() {
 			int matchCount = 0;
 			while(true) {
@@ -216,6 +218,7 @@ public class LogMonitor extends IpReputationMonitor {
 		}
 
 		@Override
+		@SuppressWarnings("SleepWhileInLoop")
 		public void run() {
 			final Map<Integer,Short> ipScores = new LinkedHashMap<>();
 			final List<QueueEntry> snapshot = new ArrayList<>();

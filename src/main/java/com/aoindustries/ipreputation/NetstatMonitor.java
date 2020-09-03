@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
+@SuppressWarnings("UseOfSystemOutOrSystemErr")
 public class NetstatMonitor extends IpReputationMonitor {
 
 	private static final String[] windowsCommand = {
@@ -121,6 +122,7 @@ public class NetstatMonitor extends IpReputationMonitor {
 	}
 
 	@Override
+	@SuppressWarnings({"AssignmentToForLoopParameter", "SleepWhileInLoop"})
 	public void start() {
 		final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("windows");
 		Thread thread = new Thread(
