@@ -64,9 +64,11 @@ public class IpReputationDaemon {
 								IpReputationMonitor monitor = constructor.newInstance(conn, config, num);
 								monitor.start();
 								monitors.set(num-1, monitor);
-							} catch(RuntimeException | ReflectiveOperationException T) {
+							} catch(ThreadDeath td) {
+								throw td;
+							} catch(Throwable t) {
 								// Catch any errors on each monitoring, starting-up those that can still start
-								T.printStackTrace(System.err);
+								t.printStackTrace(System.err);
 								hasError = true;
 							}
 						}
