@@ -28,7 +28,6 @@ import com.aoindustries.aoserv.client.net.reputation.Set;
 import com.aoindustries.lang.ProcessResult;
 import com.aoindustries.lang.Strings;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -122,9 +121,9 @@ public class NetstatMonitor extends IpReputationMonitor {
 	}
 
 	@Override
-	@SuppressWarnings({"AssignmentToForLoopParameter", "SleepWhileInLoop"})
 	public void start() {
 		final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("windows");
+		@SuppressWarnings({"AssignmentToForLoopParameter", "UseSpecificCatch", "TooBroadCatch", "SleepWhileInLoop"})
 		Thread thread = new Thread(
 			() -> {
 				final java.util.Set<Integer> uniqueIPs = new LinkedHashSet<>();
@@ -217,8 +216,10 @@ public class NetstatMonitor extends IpReputationMonitor {
 							// Sleep and then repeat
 							Thread.sleep(checkInterval);
 						}
-					} catch(RuntimeException | IOException | InterruptedException | SQLException T) {
-						T.printStackTrace(System.err);
+					} catch(ThreadDeath td) {
+						throw td;
+					} catch(Throwable t) {
+						t.printStackTrace(System.err);
 						try {
 							Thread.sleep(errorSleep);
 						} catch(InterruptedException e) {

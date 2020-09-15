@@ -28,10 +28,8 @@ import com.aoindustries.aoserv.client.net.reputation.Set;
 import com.aoindustries.io.LogFollower;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -168,7 +166,7 @@ public class LogMonitor extends IpReputationMonitor {
 		}
 
 		@Override
-		@SuppressWarnings("SleepWhileInLoop")
+		@SuppressWarnings({"UseSpecificCatch", "TooBroadCatch", "SleepWhileInLoop"})
 		public void run() {
 			int matchCount = 0;
 			while(true) {
@@ -196,8 +194,10 @@ public class LogMonitor extends IpReputationMonitor {
 							}
 						}
 					}
-				} catch(RuntimeException | IOException T) {
-					T.printStackTrace(System.err);
+				} catch(ThreadDeath td) {
+					throw td;
+				} catch(Throwable t) {
+					t.printStackTrace(System.err);
 					try {
 						Thread.sleep(errorSleep);
 					} catch(InterruptedException e) {
@@ -218,7 +218,7 @@ public class LogMonitor extends IpReputationMonitor {
 		}
 
 		@Override
-		@SuppressWarnings("SleepWhileInLoop")
+		@SuppressWarnings({"UseSpecificCatch", "TooBroadCatch", "SleepWhileInLoop"})
 		public void run() {
 			final Map<Integer,Short> ipScores = new LinkedHashMap<>();
 			final List<QueueEntry> snapshot = new ArrayList<>();
@@ -271,8 +271,10 @@ public class LogMonitor extends IpReputationMonitor {
 						}
 						reputationSet.addReputation(newReputations);
 					}
-				} catch(RuntimeException | IOException | InterruptedException | SQLException T) {
-					T.printStackTrace(System.err);
+				} catch(ThreadDeath td) {
+					throw td;
+				} catch(Throwable t) {
+					t.printStackTrace(System.err);
 					try {
 						Thread.sleep(errorSleep);
 					} catch(InterruptedException e) {

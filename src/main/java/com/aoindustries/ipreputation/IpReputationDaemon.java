@@ -24,7 +24,6 @@ package com.aoindustries.ipreputation;
 
 import com.aoindustries.aoserv.client.AOServConnector;
 import com.aoindustries.util.PropertiesUtils;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,8 +82,10 @@ public class IpReputationDaemon {
 						// Allow main method to exit
 						started = true;
 					}
-				} catch(RuntimeException | IOException T) {
-					T.printStackTrace(System.err);
+				} catch(ThreadDeath td) {
+					throw td;
+				} catch(Throwable t) {
+					t.printStackTrace(System.err);
 					try {
 						Thread.sleep(ERROR_SLEEP);
 					} catch(InterruptedException e) {
