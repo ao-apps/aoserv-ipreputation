@@ -1,6 +1,6 @@
 #
 # aoserv-ipreputation - Daemon that feeds IP reputation into the AOServ Platform.
-# Copyright (C) 2012, 2020  AO Industries, Inc.
+# Copyright (C) 2012, 2020, 2021  AO Industries, Inc.
 #     support@aoindustries.com
 #     7262 Bull Pen Cir
 #     Mobile, AL 36695
@@ -30,7 +30,5 @@ aoserv.client.password=${PASSWORD}
 aoserv.client.ssl.hostname=master.aoindustries.com
 aoserv.client.ssl.port=4583
 aoserv.client.ssl.connection.pool.size=8
-aoserv.client.ssl.truststore.path=${PATH_TO_CONF_CACERTS}
-# aoserv.client.ssl.truststore.path=C:\\Program Files (X86)\\ipreputation\\conf\\cacerts
-# aoserv.client.ssl.truststore.path=/opt/ipreputation/conf/cacerts
-aoserv.client.ssl.truststore.password=changeit
+aoserv.client.ssl.truststore.path=
+aoserv.client.ssl.truststore.password=

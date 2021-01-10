@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 aoserv-ipreputation - Daemon that feeds IP reputation into the AOServ Platform.
-Copyright (C) 2020  AO Industries, Inc.
+Copyright (C) 2020, 2021  AO Industries, Inc.
     support@aoindustries.com
     7262 Bull Pen Cir
     Mobile, AL 36695
@@ -37,7 +37,7 @@ along with aoserv-ipreputation.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2020-04-19T08:11:59-05:00"
-		dateModified="2020-04-26T01:08:51-05:00"
+		dateModified="2021-01-10T14:26:45-06:00"
 	>
 		<c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
 			<changelog:release
@@ -47,13 +47,17 @@ along with aoserv-ipreputation.  If not, see <http://www.gnu.org/licenses />.
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{project.scm.url}"
 			>
-				<!-- TODO:
 				<ul>
+					<li>
+						Removed truststore in <code>conf/cacerts</code>, since master.aoindustries.com is now a
+						Let's Encrypt certificate.
+					</li>
+					<!-- TODO:
 					<li>Update wrapper-windows-x86</li>
 					<li>Create a task to look for updates, too</li>
 					<li>Build assemblies with assembly plugin</li>
+					-->
 				</ul>
-				-->
 			</changelog:release>
 		</c:if>
 
