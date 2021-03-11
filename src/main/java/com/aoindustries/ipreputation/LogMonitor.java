@@ -1,6 +1,6 @@
 /*
  * aoserv-ipreputation - Daemon that feeds IP reputation into the AOServ Platform.
- * Copyright (C) 2013, 2018, 2020  AO Industries, Inc.
+ * Copyright (C) 2013, 2018, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -220,7 +220,7 @@ public class LogMonitor extends IpReputationMonitor {
 		@Override
 		@SuppressWarnings({"UseSpecificCatch", "TooBroadCatch", "SleepWhileInLoop"})
 		public void run() {
-			final Map<Integer,Short> ipScores = new LinkedHashMap<>();
+			final Map<Integer, Short> ipScores = new LinkedHashMap<>();
 			final List<QueueEntry> snapshot = new ArrayList<>();
 			final List<Set.AddReputation> newReputations = new ArrayList<>();
 			while(true) {
@@ -259,7 +259,7 @@ public class LogMonitor extends IpReputationMonitor {
 						// Make API call to add reputations
 						if(debug) System.out.println(num+": Adding " + ipScores.size() + " new reputations to "+setName);
 						newReputations.clear();
-						for(Map.Entry<Integer,Short> entry : ipScores.entrySet()) {
+						for(Map.Entry<Integer, Short> entry : ipScores.entrySet()) {
 							newReputations.add(
 								new Set.AddReputation(
 									entry.getKey(),
