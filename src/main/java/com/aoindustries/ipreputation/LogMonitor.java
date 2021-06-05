@@ -22,10 +22,10 @@
  */
 package com.aoindustries.ipreputation;
 
+import com.aoapps.hodgepodge.io.LogFollower;
 import com.aoindustries.aoserv.client.AOServConnector;
 import com.aoindustries.aoserv.client.net.IpAddress;
 import com.aoindustries.aoserv.client.net.reputation.Set;
-import com.aoindustries.io.LogFollower;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
