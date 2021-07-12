@@ -6,6 +6,8 @@
 [![java: &gt;= 11](https://aoindustries.com/ao-badges/java-11.svg)](https://docs.oracle.com/en/java/javase/11/docs/api/)
 [![license: LGPL v3](https://aoindustries.com/ao-badges/license-lgpl-3.0.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
+[![Build](https://github.com/aoindustries/aoserv-ipreputation/workflows/Build/badge.svg?branch=master)](https://github.com/aoindustries/aoserv-ipreputation/actions?query=workflow%3ABuild)
+
 Daemon that feeds IP reputation into the [AOServ Platform](https://aoindustries.com/aoserv/).
 
 ## Project Links
