@@ -29,7 +29,7 @@ along with aoserv-ipreputation.  If not, see <http://www.gnu.org/licenses />.
 		<relativePath>../../../oss/parent/pom.xml</relativePath>
 	</parent>
 
-	<groupId>com.aoindustries</groupId><artifactId>aoserv-ipreputation-book</artifactId><version>1.85.0-SNAPSHOT</version>
+	<groupId>com.aoindustries</groupId><artifactId>aoserv-ipreputation-book</artifactId><version>1.85.0</version>
 	<packaging>bundle</packaging>
 
 	<properties>
@@ -78,7 +78,7 @@ along with aoserv-ipreputation.  If not, see <http://www.gnu.org/licenses />.
 		<connection>scm:git:git://github.com/aoindustries/aoserv-ipreputation.git</connection>
 		<developerConnection>scm:git:git@github.com:aoindustries/aoserv-ipreputation.git</developerConnection>
 		<url>https://github.com/aoindustries/aoserv-ipreputation</url>
-		<tag>HEAD</tag>
+		<tag>aoserv-ipreputation-book-1.85.0</tag>
 	</scm>
 
 	<issueManagement>
