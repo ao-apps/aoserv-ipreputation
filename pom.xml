@@ -43,7 +43,7 @@ along with aoserv-ipreputation.  If not, see <http://www.gnu.org/licenses />.
 		<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 		<!-- SonarQube -->
 		<sonar.projectKey>com.aoapps.platform:aoapps-ipreputation<!-- TODO: ${project.groupId}:${project.artifactId} --></sonar.projectKey>
-		<sonar.organization>aoindustries</sonar.organization>
+		<sonar.organization>ao-apps</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<!-- TODO: Implement tests -->
 		<sonar.coverage.exclusions>**.*</sonar.coverage.exclusions>
@@ -78,20 +78,20 @@ along with aoserv-ipreputation.  If not, see <http://www.gnu.org/licenses />.
 	</developers>
 
 	<scm>
-		<connection>scm:git:git://github.com/aoindustries/aoserv-ipreputation.git</connection>
-		<developerConnection>scm:git:git@github.com:aoindustries/aoserv-ipreputation.git</developerConnection>
-		<url>https://github.com/aoindustries/aoserv-ipreputation</url>
+		<connection>scm:git:git://github.com/ao-apps/aoserv-ipreputation.git</connection>
+		<developerConnection>scm:git:git@github.com:ao-apps/aoserv-ipreputation.git</developerConnection>
+		<url>https://github.com/ao-apps/aoserv-ipreputation</url>
 		<tag>HEAD</tag>
 	</scm>
 
 	<issueManagement>
 		<system>GitHub Issues</system>
-		<url>https://github.com/aoindustries/aoserv-ipreputation/issues</url>
+		<url>https://github.com/ao-apps/aoserv-ipreputation/issues</url>
 	</issueManagement>
 
 	<ciManagement>
 		<system>GitHub Actions</system>
-		<url>https://github.com/aoindustries/aoserv-ipreputation/actions</url>
+		<url>https://github.com/ao-apps/aoserv-ipreputation/actions</url>
 	</ciManagement>
 
 	<repositories>
