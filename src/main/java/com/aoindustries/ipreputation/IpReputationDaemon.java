@@ -96,10 +96,10 @@ public class IpReputationDaemon {
 			if(monitors.isEmpty()) {
 				throw new IllegalStateException("No monitors defined");
 			}
-		} catch(ThreadDeath TD) {
-			throw TD;
-		} catch(Throwable T) {
-			T.printStackTrace(System.err);
+		} catch(ThreadDeath td) {
+			throw td;
+		} catch(Throwable t) {
+			t.printStackTrace(System.err);
 			try {
 				Thread.sleep(ERROR_SLEEP);
 			} catch(InterruptedException e) {
