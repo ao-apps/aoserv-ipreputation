@@ -41,7 +41,7 @@ public class IpReputationDaemon {
 			// Each monitor will only be started once, even during retry
 			final List<IpReputationMonitor> monitors = new ArrayList<>();
 			boolean started = false;
-			while(!started) {
+			while(!started && !Thread.currentThread().isInterrupted()) {
 				try {
 					// Get AOServConnector with settings in properties file
 					AOServConnector conn = AOServConnector.getConnector();
@@ -77,6 +77,8 @@ public class IpReputationDaemon {
 							Thread.sleep(ERROR_SLEEP);
 						} catch(InterruptedException e) {
 							e.printStackTrace(System.err);
+							// Restore the interrupted status
+							Thread.currentThread().interrupt();
 						}
 					} else {
 						// Allow main method to exit
@@ -90,6 +92,8 @@ public class IpReputationDaemon {
 						Thread.sleep(ERROR_SLEEP);
 					} catch(InterruptedException e) {
 						e.printStackTrace(System.err);
+						// Restore the interrupted status
+						Thread.currentThread().interrupt();
 					}
 				}
 			}

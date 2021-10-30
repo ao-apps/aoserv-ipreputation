@@ -169,7 +169,7 @@ public class LogMonitor extends IpReputationMonitor {
 		@SuppressWarnings({"UseSpecificCatch", "TooBroadCatch", "SleepWhileInLoop"})
 		public void run() {
 			int matchCount = 0;
-			while(true) {
+			while(!Thread.currentThread().isInterrupted()) {
 				try {
 					// Open the log for following
 					try (BufferedReader log = new BufferedReader(new InputStreamReader(new BufferedInputStream(new LogFollower(path, pollInterval)), charset))) {
@@ -202,6 +202,8 @@ public class LogMonitor extends IpReputationMonitor {
 						Thread.sleep(errorSleep);
 					} catch(InterruptedException e) {
 						e.printStackTrace(System.err);
+						// Restore the interrupted status
+						Thread.currentThread().interrupt();
 					}
 				}
 			}
@@ -223,7 +225,7 @@ public class LogMonitor extends IpReputationMonitor {
 			final Map<Integer, Short> ipScores = new LinkedHashMap<>();
 			final List<QueueEntry> snapshot = new ArrayList<>();
 			final List<Set.AddReputation> newReputations = new ArrayList<>();
-			while(true) {
+			while(!Thread.currentThread().isInterrupted()) {
 				try {
 					// Get AOServConnector with settings in properties file
 					AOServConnector conn = AOServConnector.getConnector();
@@ -232,7 +234,7 @@ public class LogMonitor extends IpReputationMonitor {
 					Set reputationSet = conn.getNet().getReputation().getSet().get(setName);
 					if(reputationSet==null) throw new NullPointerException("IP Reputation Set not found: " + setName);
 
-					while(true) {
+					while(!Thread.currentThread().isInterrupted()) {
 						// Sleep for commit interval
 						Thread.sleep(commitInterval);
 
@@ -273,12 +275,18 @@ public class LogMonitor extends IpReputationMonitor {
 					}
 				} catch(ThreadDeath td) {
 					throw td;
+				} catch(InterruptedException e) {
+					e.printStackTrace(System.err);
+					// Restore the interrupted status
+					Thread.currentThread().interrupt();
 				} catch(Throwable t) {
 					t.printStackTrace(System.err);
 					try {
 						Thread.sleep(errorSleep);
 					} catch(InterruptedException e) {
 						e.printStackTrace(System.err);
+						// Restore the interrupted status
+						Thread.currentThread().interrupt();
 					}
 				}
 			}

@@ -128,7 +128,7 @@ public class NetstatMonitor extends IpReputationMonitor {
 			() -> {
 				final java.util.Set<Integer> uniqueIPs = new LinkedHashSet<>();
 				final List<Set.AddReputation> newReputations = new ArrayList<>();
-				while(true) {
+				while(!Thread.currentThread().isInterrupted()) {
 					try {
 						// Get AOServConnector with settings in properties file
 						AOServConnector _conn = AOServConnector.getConnector();
@@ -136,7 +136,7 @@ public class NetstatMonitor extends IpReputationMonitor {
 						// Find the reputation set
 						Set reputationSet = _conn.getNet().getReputation().getSet().get(setName);
 						if(reputationSet==null) throw new NullPointerException("IP Reputation Set not found: " + setName);
-						while(true) {
+						while(!Thread.currentThread().isInterrupted()) {
 							ProcessResult result = ProcessResult.exec(isWindows ? windowsCommand : nonWindowsCommand);
 							int exitVal = result.getExitVal();
 							if(exitVal!=0) throw new IOException("Non-zero exit value: " + exitVal +".  stderr=" + result.getStderr());
@@ -216,6 +216,10 @@ public class NetstatMonitor extends IpReputationMonitor {
 							// Sleep and then repeat
 							Thread.sleep(checkInterval);
 						}
+					} catch(InterruptedException e) {
+						e.printStackTrace(System.err);
+						// Restore the interrupted status
+						Thread.currentThread().interrupt();
 					} catch(ThreadDeath td) {
 						throw td;
 					} catch(Throwable t) {
@@ -224,6 +228,8 @@ public class NetstatMonitor extends IpReputationMonitor {
 							Thread.sleep(errorSleep);
 						} catch(InterruptedException e) {
 							e.printStackTrace(System.err);
+							// Restore the interrupted status
+							Thread.currentThread().interrupt();
 						}
 					}
 				}
