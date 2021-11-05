@@ -29,7 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class IpReputationDaemon {
+public abstract class IpReputationDaemon {
+
+	/** Make no instances. */
+	private IpReputationDaemon() {throw new AssertionError();}
 
 	private static final long ERROR_SLEEP = 30000L;
 
@@ -112,11 +115,5 @@ public class IpReputationDaemon {
 				Thread.currentThread().interrupt();
 			}
 		}
-	}
-
-	/**
-	 * Make no instances.
-	 */
-	private IpReputationDaemon() {
 	}
 }

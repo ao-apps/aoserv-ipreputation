@@ -44,5 +44,6 @@ public abstract class IpReputationMonitor {
 	 */
 	// TODO: Make abstract on next version
 	public void start() {
+		// Do nothing
 	}
 }
