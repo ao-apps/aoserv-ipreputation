@@ -1,6 +1,6 @@
 /*
  * aoserv-ipreputation - Daemon that feeds IP reputation into the AOServ Platform.
- * Copyright (C) 2012, 2013, 2018, 2020, 2021  AO Industries, Inc.
+ * Copyright (C) 2012, 2013, 2018, 2020, 2021, 2022  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public abstract class IpReputationDaemon {
+public final class IpReputationDaemon {
 
 	/** Make no instances. */
 	private IpReputationDaemon() {throw new AssertionError();}
