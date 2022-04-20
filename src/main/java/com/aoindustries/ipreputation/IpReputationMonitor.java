@@ -28,23 +28,23 @@ import java.util.Properties;
 
 public abstract class IpReputationMonitor {
 
-	protected final AOServConnector conn;
-	protected final int num;
+  protected final AOServConnector conn;
+  protected final int num;
 
-	/**
-	 * All implementations must have a public constructor with these same parameters.
-	 */
-	protected IpReputationMonitor(AOServConnector conn, Properties config, int num) {
-		this.conn = conn;
-		this.num = num;
-	}
+  /**
+   * All implementations must have a public constructor with these same parameters.
+   */
+  protected IpReputationMonitor(AOServConnector conn, Properties config, int num) {
+    this.conn = conn;
+    this.num = num;
+  }
 
-	/**
-	 * Starts this monitor, must return quickly while monitor runs in non-daemon
-	 * background thread.  Monitors are never stopped.
-	 */
-	// TODO: Make abstract on next version
-	public void start() {
-		// Do nothing
-	}
+  /**
+   * Starts this monitor, must return quickly while monitor runs in non-daemon
+   * background thread.  Monitors are never stopped.
+   */
+  // TODO: Make abstract on next version
+  public void start() {
+    // Do nothing
+  }
 }

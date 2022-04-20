@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # aoserv-ipreputation - Daemon that feeds IP reputation into the AOServ Platform.
-# Copyright (C) 2012, 2020, 2021  AO Industries, Inc.
+# Copyright (C) 2012, 2020, 2021, 2022  AO Industries, Inc.
 #     support@aoindustries.com
 #     7262 Bull Pen Cir
 #     Mobile, AL 36695
@@ -44,23 +44,23 @@ case "$1" in
         # Check if already running
         if [ ! -f "$PID" ]; then
             echo -n "Starting ipreputation: "
-	    cd "$BIN"
-	    nohup \
-		su \
-		-s /bin/sh \
-		-c "exec java -classpath classes:conf:lib/ao-hodgepodge.jar:lib/aoserv-client.jar:lib/ipreputation.jar com.aoindustries.ipreputation.IpReputationDaemon" \
-		ipreputation \
-		>& "$VAR/ipreputation.log" &
-	    echo "$!" > "$PID"
-	    echo "Done"
+      cd "$BIN"
+      nohup \
+    su \
+    -s /bin/sh \
+    -c "exec java -classpath classes:conf:lib/ao-hodgepodge.jar:lib/aoserv-client.jar:lib/ipreputation.jar com.aoindustries.ipreputation.IpReputationDaemon" \
+    ipreputation \
+    >& "$VAR/ipreputation.log" &
+      echo "$!" > "$PID"
+      echo "Done"
         fi
         ;;
   stop)
         if [ -f "$PID" ]; then
             echo -n "Stopping ipreputation: "
-	    kill `cat "$PID"`
+      kill `cat "$PID"`
             rm -f "$PID"
-	    echo "Done"
+      echo "Done"
         fi
         ;;
   reload|restart)
