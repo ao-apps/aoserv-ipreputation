@@ -83,69 +83,69 @@ public class LogMonitor extends IpReputationMonitor {
     pattern = Pattern.compile(patternValue);
     // group
     group = Integer.parseInt(
-      config.getProperty(
-        "ipreputation.monitor." + num + ".group",
-        "0"
-      )
+        config.getProperty(
+            "ipreputation.monitor." + num + ".group",
+            "0"
+        )
     );
     // debug
     debug = Boolean.parseBoolean(
-      config.getProperty(
-        "ipreputation.monitor." + num + ".debug",
-        "false"
-      )
+        config.getProperty(
+            "ipreputation.monitor." + num + ".debug",
+            "false"
+        )
     );
     // pollInterval
     pollInterval = Integer.parseInt(
-      config.getProperty(
-        "ipreputation.monitor." + num + ".pollInterval",
-        "5000"
-      )
+        config.getProperty(
+            "ipreputation.monitor." + num + ".pollInterval",
+            "5000"
+        )
     );
     // commitInterval
     commitInterval = Integer.parseInt(
-      config.getProperty(
-        "ipreputation.monitor." + num + ".commitInterval",
-        "30000"
-      )
+        config.getProperty(
+            "ipreputation.monitor." + num + ".commitInterval",
+            "30000"
+        )
     );
     // coalesce
     coalesce = Boolean.parseBoolean(
-      config.getProperty(
-        "ipreputation.monitor." + num + ".coalesce",
-        "false"
-      )
+        config.getProperty(
+            "ipreputation.monitor." + num + ".coalesce",
+            "false"
+        )
     );
     // charset
     String charsetValue = config.getProperty("ipreputation.monitor." + num + ".charset");
     charset = charsetValue == null ? Charset.defaultCharset() : Charset.forName(charsetValue);
     // errorSleep
     errorSleep = Long.parseLong(
-      config.getProperty(
-        "ipreputation.monitor." + num + ".errorSleep",
-        "30000"
-      )
+        config.getProperty(
+            "ipreputation.monitor." + num + ".errorSleep",
+            "30000"
+        )
     );
     // confidenceType
     confidenceType = Set.ConfidenceType.valueOf(
-      config.getProperty(
-        "ipreputation.monitor." + num + ".confidenceType",
-        Set.ConfidenceType.UNCERTAIN.name()
-      ).toUpperCase(Locale.ENGLISH)
+        config.getProperty(
+            "ipreputation.monitor." + num + ".confidenceType",
+            Set.ConfidenceType.UNCERTAIN.name()
+        ).toUpperCase(Locale.ENGLISH)
     );
     // reputationType
     reputationType = Set.ReputationType.valueOf(
-      config.getProperty(
-        "ipreputation.monitor." + num + ".reputationType",
-        Set.ReputationType.GOOD.name()
-      ).toUpperCase(Locale.ENGLISH)
+        config.getProperty(
+            "ipreputation.monitor." + num + ".reputationType",
+            Set.ReputationType.GOOD.name()
+        ).toUpperCase(Locale.ENGLISH)
     );
     // score
     score = Short.valueOf(
-      config.getProperty(
-        "ipreputation.monitor." + num + ".score",
-        "1"
-      )
+        config.getProperty(
+            "ipreputation.monitor." + num + ".score",
+            "1"
+        )
     );
   }
 
@@ -168,7 +168,7 @@ public class LogMonitor extends IpReputationMonitor {
     private final List<QueueEntry> buffer;
 
     private LogReaderThread(List<QueueEntry> buffer) {
-      super(LogMonitor.class.getName()+"(\"" + path +"\" -> \"" + setName+"\").LogReaderThread");
+      super(LogMonitor.class.getName() + "(\"" + path + "\" -> \"" + setName + "\").LogReaderThread");
       this.buffer = buffer;
     }
 
@@ -182,17 +182,17 @@ public class LogMonitor extends IpReputationMonitor {
           try (BufferedReader log = new BufferedReader(new InputStreamReader(new BufferedInputStream(new LogFollower(path, pollInterval)), charset))) {
             // Read one line at a time
             String line;
-            while ((line=log.readLine()) != null) {
+            while ((line = log.readLine()) != null) {
               Matcher m = pattern.matcher(line);
               if (m.matches()) {
                 String matched = m.group(group);
                 matchCount++;
                 if (debug) {
-                  System.out.println(num+": Matched "+matchCount+": "+matched);
+                  System.out.println(num + ": Matched " + matchCount + ": " + matched);
                 }
                 try {
                   QueueEntry entry = new QueueEntry(
-                    IpAddress.getIntForIPAddress(matched)
+                      IpAddress.getIntForIPAddress(matched)
                   );
                   synchronized (buffer) {
                     buffer.add(entry);
@@ -224,7 +224,7 @@ public class LogMonitor extends IpReputationMonitor {
     private final List<QueueEntry> buffer;
 
     private CommitThread(List<QueueEntry> buffer) {
-      super(LogMonitor.class.getName()+"(\"" + path +"\" -> \"" + setName+"\").CommitThread");
+      super(LogMonitor.class.getName() + "(\"" + path + "\" -> \"" + setName + "\").CommitThread");
       this.buffer = buffer;
     }
 
@@ -265,23 +265,23 @@ public class LogMonitor extends IpReputationMonitor {
                 ipScores.put(ip, score);
               } else if (!coalesce) {
                 int newScore = existingScore + score;
-                ipScores.put(ip, newScore>Short.MAX_VALUE ? Short.MAX_VALUE : (short)newScore);
+                ipScores.put(ip, newScore > Short.MAX_VALUE ? Short.MAX_VALUE : (short) newScore);
               }
             }
 
             // Make API call to add reputations
             if (debug) {
-              System.out.println(num+": Adding " + ipScores.size() + " new reputations to "+setName);
+              System.out.println(num + ": Adding " + ipScores.size() + " new reputations to " + setName);
             }
             newReputations.clear();
             for (Map.Entry<Integer, Short> entry : ipScores.entrySet()) {
               newReputations.add(
-                new Set.AddReputation(
-                  entry.getKey(),
-                  confidenceType,
-                  reputationType,
-                  entry.getValue()
-                )
+                  new Set.AddReputation(
+                      entry.getKey(),
+                      confidenceType,
+                      reputationType,
+                      entry.getValue()
+                  )
               );
             }
             reputationSet.addReputation(newReputations);

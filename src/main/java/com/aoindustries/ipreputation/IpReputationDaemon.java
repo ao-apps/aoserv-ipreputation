@@ -56,7 +56,7 @@ public final class IpReputationDaemon {
           Properties config = PropertiesUtils.loadFromResource(IpReputationDaemon.class, CONF_RESOURCE);
 
           boolean hasError = false;
-          for (int num=1; num<Integer.MAX_VALUE; num++) {
+          for (int num = 1; num < Integer.MAX_VALUE; num++) {
             String className = config.getProperty("ipreputation.monitor." + num + ".className");
             if (className == null) {
               break;
@@ -64,13 +64,13 @@ public final class IpReputationDaemon {
             while (monitors.size() < num) {
               monitors.add(null);
             }
-            if (monitors.get(num-1) == null) {
+            if (monitors.get(num - 1) == null) {
               try {
                 Class<? extends IpReputationMonitor> clazz = Class.forName(className).asSubclass(IpReputationMonitor.class);
                 Constructor<? extends IpReputationMonitor> constructor = clazz.getConstructor(AOServConnector.class, Properties.class, Integer.TYPE);
                 IpReputationMonitor monitor = constructor.newInstance(conn, config, num);
                 monitor.start();
-                monitors.set(num-1, monitor);
+                monitors.set(num - 1, monitor);
               } catch (ThreadDeath td) {
                 throw td;
               } catch (Throwable t) {
