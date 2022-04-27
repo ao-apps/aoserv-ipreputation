@@ -184,10 +184,9 @@ public class NetstatMonitor extends IpReputationMonitor {
                       }
                     }
                     if (
-                        proto != null
-                            && proto.equalsIgnoreCase("TCP")
+                        "TCP".equalsIgnoreCase(proto)
                             && state != null
-                            && state.equalsIgnoreCase("ESTABLISHED")
+                            && "ESTABLISHED".equalsIgnoreCase(state)
                     ) {
                       assert localAddress != null;
                       int colonPos = localAddress.lastIndexOf(':');
