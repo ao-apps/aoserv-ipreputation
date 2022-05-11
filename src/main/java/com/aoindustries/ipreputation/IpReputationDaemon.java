@@ -24,12 +24,16 @@
 package com.aoindustries.ipreputation;
 
 import com.aoapps.lang.util.PropertiesUtils;
-import com.aoindustries.aoserv.client.AOServConnector;
+import com.aoindustries.aoserv.client.AoservConnector;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * IP reputation daemon.  Runs any number of {@linkplain IpReputationMonitor} to gather and feed IP reputation data
+ * into the AOServ Platform.
+ */
 public final class IpReputationDaemon {
 
   /** Make no instances. */
@@ -41,6 +45,9 @@ public final class IpReputationDaemon {
 
   private static final String CONF_RESOURCE = "/com/aoindustries/ipreputation/ipreputation.properties";
 
+  /**
+   * Runs the IP reputation daemon.
+   */
   @SuppressWarnings({"UseOfSystemOutOrSystemErr", "SleepWhileInLoop", "TooBroadCatch", "UseSpecificCatch"})
   public static void main(String[] args) {
     try {
@@ -49,8 +56,8 @@ public final class IpReputationDaemon {
       boolean started = false;
       while (!started && !Thread.currentThread().isInterrupted()) {
         try {
-          // Get AOServConnector with settings in properties file
-          AOServConnector conn = AOServConnector.getConnector();
+          // Get AoservConnector with settings in properties file
+          AoservConnector conn = AoservConnector.getConnector();
 
           // Parse the properties file and start the monitors
           Properties config = PropertiesUtils.loadFromResource(IpReputationDaemon.class, CONF_RESOURCE);
@@ -67,7 +74,7 @@ public final class IpReputationDaemon {
             if (monitors.get(num - 1) == null) {
               try {
                 Class<? extends IpReputationMonitor> clazz = Class.forName(className).asSubclass(IpReputationMonitor.class);
-                Constructor<? extends IpReputationMonitor> constructor = clazz.getConstructor(AOServConnector.class, Properties.class, Integer.TYPE);
+                Constructor<? extends IpReputationMonitor> constructor = clazz.getConstructor(AoservConnector.class, Properties.class, Integer.TYPE);
                 IpReputationMonitor monitor = constructor.newInstance(conn, config, num);
                 monitor.start();
                 monitors.set(num - 1, monitor);

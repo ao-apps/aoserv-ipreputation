@@ -23,18 +23,21 @@
 
 package com.aoindustries.ipreputation;
 
-import com.aoindustries.aoserv.client.AOServConnector;
+import com.aoindustries.aoserv.client.AoservConnector;
 import java.util.Properties;
 
+/**
+ * Monitors some external resource to gain IP reputation information.
+ */
 public abstract class IpReputationMonitor {
 
-  protected final AOServConnector conn;
+  protected final AoservConnector conn;
   protected final int num;
 
   /**
    * All implementations must have a public constructor with these same parameters.
    */
-  protected IpReputationMonitor(AOServConnector conn, Properties config, int num) {
+  protected IpReputationMonitor(AoservConnector conn, Properties config, int num) {
     this.conn = conn;
     this.num = num;
   }

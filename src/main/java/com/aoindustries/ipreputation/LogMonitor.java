@@ -24,7 +24,7 @@
 package com.aoindustries.ipreputation;
 
 import com.aoapps.hodgepodge.io.LogFollower;
-import com.aoindustries.aoserv.client.AOServConnector;
+import com.aoindustries.aoserv.client.AoservConnector;
 import com.aoindustries.aoserv.client.net.IpAddress;
 import com.aoindustries.aoserv.client.net.reputation.Set;
 import java.io.BufferedInputStream;
@@ -60,7 +60,10 @@ public class LogMonitor extends IpReputationMonitor {
   private final Set.ReputationType reputationType;
   private final Short score;
 
-  public LogMonitor(AOServConnector conn, Properties config, int num) {
+  /**
+   * Creates a new log monitor.
+   */
+  public LogMonitor(AoservConnector conn, Properties config, int num) {
     super(conn, config, num);
     // setName
     String setNameProperty = "ipreputation.monitor." + num + ".setName";
@@ -192,7 +195,7 @@ public class LogMonitor extends IpReputationMonitor {
                 }
                 try {
                   QueueEntry entry = new QueueEntry(
-                      IpAddress.getIntForIPAddress(matched)
+                      IpAddress.getIntForIpAddress(matched)
                   );
                   synchronized (buffer) {
                     buffer.add(entry);
@@ -236,8 +239,8 @@ public class LogMonitor extends IpReputationMonitor {
       final List<Set.AddReputation> newReputations = new ArrayList<>();
       while (!Thread.currentThread().isInterrupted()) {
         try {
-          // Get AOServConnector with settings in properties file
-          AOServConnector conn = AOServConnector.getConnector();
+          // Get AoservConnector with settings in properties file
+          AoservConnector conn = AoservConnector.getConnector();
 
           // Find the reputation set
           Set reputationSet = conn.getNet().getReputation().getSet().get(setName);

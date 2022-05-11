@@ -25,7 +25,7 @@ package com.aoindustries.ipreputation;
 
 import com.aoapps.lang.ProcessResult;
 import com.aoapps.lang.Strings;
-import com.aoindustries.aoserv.client.AOServConnector;
+import com.aoindustries.aoserv.client.AoservConnector;
 import com.aoindustries.aoserv.client.net.IpAddress;
 import com.aoindustries.aoserv.client.net.reputation.Set;
 import java.io.IOException;
@@ -36,6 +36,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
+/**
+ * Monitors netstat for active connections, increasing their reputation the longer connected.
+ */
 @SuppressWarnings("UseOfSystemOutOrSystemErr")
 public class NetstatMonitor extends IpReputationMonitor {
 
@@ -61,7 +64,10 @@ public class NetstatMonitor extends IpReputationMonitor {
   private final Set.ReputationType reputationType;
   private final short score;
 
-  public NetstatMonitor(AOServConnector conn, Properties config, int num) {
+  /**
+   * Creates a new netstat monitor.
+   */
+  public NetstatMonitor(AoservConnector conn, Properties config, int num) {
     super(conn, config, num);
     // setName
     String setNameProperty = "ipreputation.monitor." + num + ".setName";
@@ -133,15 +139,15 @@ public class NetstatMonitor extends IpReputationMonitor {
     @SuppressWarnings({"AssignmentToForLoopParameter", "UseSpecificCatch", "TooBroadCatch", "SleepWhileInLoop"})
     Thread thread = new Thread(
         () -> {
-          final java.util.Set<Integer> uniqueIPs = new LinkedHashSet<>();
+          final java.util.Set<Integer> uniqueIps = new LinkedHashSet<>();
           final List<Set.AddReputation> newReputations = new ArrayList<>();
           while (!Thread.currentThread().isInterrupted()) {
             try {
-              // Get AOServConnector with settings in properties file
-              AOServConnector _conn = AOServConnector.getConnector();
+              // Get AoservConnector with settings in properties file
+              AoservConnector myConn = AoservConnector.getConnector();
 
               // Find the reputation set
-              Set reputationSet = _conn.getNet().getReputation().getSet().get(setName);
+              Set reputationSet = myConn.getNet().getReputation().getSet().get(setName);
               if (reputationSet == null) {
                 throw new NullPointerException("IP Reputation Set not found: " + setName);
               }
@@ -151,7 +157,7 @@ public class NetstatMonitor extends IpReputationMonitor {
                 if (exitVal != 0) {
                   throw new IOException("Non-zero exit value: " + exitVal + ".  stderr=" + result.getStderr());
                 }
-                uniqueIPs.clear();
+                uniqueIps.clear();
                 for (String line : Strings.split(result.getStdout())) {
                   line = line.trim();
                   if (
@@ -163,26 +169,26 @@ public class NetstatMonitor extends IpReputationMonitor {
                     final String localAddress;
                     final String foreignAddress;
                     final String state;
-                    {
-                      String[] values = Strings.split(line);
-                      if (values.length == 4) {
-                        proto = values[0];
-                        localAddress = values[1];
-                        foreignAddress = values[2];
-                        state = values[3];
-                      } else if (values.length == 6) {
-                        proto = values[0];
-                        localAddress = values[3];
-                        foreignAddress = values[4];
-                        state = values[5];
-                      } else {
-                        System.err.println(num + ": Warning, cannot parse line: " + line);
-                        proto = null;
-                        localAddress = null;
-                        foreignAddress = null;
-                        state = null;
+                      {
+                        String[] values = Strings.split(line);
+                        if (values.length == 4) {
+                          proto = values[0];
+                          localAddress = values[1];
+                          foreignAddress = values[2];
+                          state = values[3];
+                        } else if (values.length == 6) {
+                          proto = values[0];
+                          localAddress = values[3];
+                          foreignAddress = values[4];
+                          state = values[5];
+                        } else {
+                          System.err.println(num + ": Warning, cannot parse line: " + line);
+                          proto = null;
+                          localAddress = null;
+                          foreignAddress = null;
+                          state = null;
+                        }
                       }
-                    }
                     if (
                         "TCP".equalsIgnoreCase(proto)
                             && state != null
@@ -200,7 +206,7 @@ public class NetstatMonitor extends IpReputationMonitor {
                             if (debug) {
                               System.out.println(num + ": Parsing " + ip);
                             }
-                            uniqueIPs.add(IpAddress.getIntForIPAddress(ip));
+                            uniqueIps.add(IpAddress.getIntForIpAddress(ip));
                           } else {
                             System.err.println(num + ": Warning, cannot parse line: " + line);
                           }
@@ -213,10 +219,10 @@ public class NetstatMonitor extends IpReputationMonitor {
                 }
                 // Make API call to add reputations
                 if (debug) {
-                  System.out.println(num + ": Adding " + uniqueIPs.size() + " new reputations to " + setName);
+                  System.out.println(num + ": Adding " + uniqueIps.size() + " new reputations to " + setName);
                 }
                 newReputations.clear();
-                for (Integer ip : uniqueIPs) {
+                for (Integer ip : uniqueIps) {
                   newReputations.add(
                       new Set.AddReputation(
                           ip,
