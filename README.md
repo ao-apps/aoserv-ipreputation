@@ -21,7 +21,7 @@ Daemon that feeds IP reputation into the [AOServ Platform](https://aoindustries.
 * [Project Home](https://aoindustries.com/aoserv/ipreputation/)
 * [Changelog](https://aoindustries.com/aoserv/ipreputation/changelog)
 * [API Docs](https://aoindustries.com/aoserv/ipreputation/apidocs/)
-* [Maven Central Repository](https://central.sonatype.com/search?namespace=com.aoindustries&q=a%3Aaoserv-ipreputation)
+* [Maven Central Repository](https://central.sonatype.com/artifact/com.aoindustries/aoserv-ipreputation)
 * [GitHub](https://github.com/ao-apps/aoserv-ipreputation)
 
 ## Contact Us
