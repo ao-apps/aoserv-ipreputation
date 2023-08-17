@@ -30,7 +30,7 @@ along with aoserv-ipreputation.  If not, see <https://www.gnu.org/licenses/>.
   </parent>
 
   <groupId>com.aoindustries</groupId><artifactId>aoserv-ipreputation</artifactId><version>1.89.0-POST-SNAPSHOT</version>
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
 
   <properties>
     <module.name>com.aoindustries.aoserv.ipreputation</module.name>
