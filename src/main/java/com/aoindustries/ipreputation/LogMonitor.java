@@ -1,6 +1,6 @@
 /*
  * aoserv-ipreputation - Daemon that feeds IP reputation into the AOServ Platform.
- * Copyright (C) 2013, 2018, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2013, 2018, 2020, 2021, 2022, 2023  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -171,7 +171,7 @@ public class LogMonitor extends IpReputationMonitor {
     private final List<QueueEntry> buffer;
 
     private LogReaderThread(List<QueueEntry> buffer) {
-      super(LogMonitor.class.getName() + "(\"" + path + "\" -> \"" + setName + "\").LogReaderThread");
+      super(LogMonitor.class.getName() + "(\"" + path + "\" → \"" + setName + "\").LogReaderThread");
       this.buffer = buffer;
     }
 
@@ -227,7 +227,7 @@ public class LogMonitor extends IpReputationMonitor {
     private final List<QueueEntry> buffer;
 
     private CommitThread(List<QueueEntry> buffer) {
-      super(LogMonitor.class.getName() + "(\"" + path + "\" -> \"" + setName + "\").CommitThread");
+      super(LogMonitor.class.getName() + "(\"" + path + "\" → \"" + setName + "\").CommitThread");
       this.buffer = buffer;
     }
 
