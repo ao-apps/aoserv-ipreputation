@@ -38,7 +38,7 @@ along with aoserv-ipreputation.  If not, see <https://www.gnu.org/licenses/>.
     <module.name>com.aoindustries.aoserv.ipreputation</module.name>
     <javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="https://aoindustries.com/aoserv/">AOServ</a>
 / <a target="${javadoc.target}" href="${project.url}">IP Reputation</a>]]></javadoc.breadcrumbs>
-            
+
     <description.html><![CDATA[Daemon that feeds IP reputation into the <a target="${javadoc.target}" href="https://aoindustries.com/aoserv/">AOServ Platform</a>.]]></description.html>
     <!-- TODO: Remove once moved to platform.aoapps.com -->
     <google.analytics.trackingId>UA-86871646-1</google.analytics.trackingId>
