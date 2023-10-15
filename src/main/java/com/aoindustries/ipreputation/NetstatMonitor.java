@@ -28,6 +28,7 @@ import com.aoapps.lang.Strings;
 import com.aoindustries.aoserv.client.AoservConnector;
 import com.aoindustries.aoserv.client.net.IpAddress;
 import com.aoindustries.aoserv.client.net.reputation.Set;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,6 +68,7 @@ public class NetstatMonitor extends IpReputationMonitor {
   /**
    * Creates a new netstat monitor.
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   public NetstatMonitor(AoservConnector conn, Properties config, int num) {
     super(conn, config, num);
     // setName

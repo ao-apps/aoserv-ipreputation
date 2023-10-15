@@ -142,6 +142,11 @@ along with aoserv-ipreputation.  If not, see <https://www.gnu.org/licenses/>.
                       <includes>element-list, package-list</includes>
                       <outputDirectory>${project.build.directory}/offlineLinks/com.aoindustries/aoserv-client</outputDirectory>
                     </artifactItem>
+                    <artifactItem>
+                      <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId><classifier>javadoc</classifier>
+                      <includes>element-list, package-list</includes>
+                      <outputDirectory>${project.build.directory}/offlineLinks/com.github.spotbugs/spotbugs-annotations</outputDirectory>
+                    </artifactItem>
                   </artifactItems>
                 </configuration>
               </execution>
@@ -164,6 +169,10 @@ along with aoserv-ipreputation.  If not, see <https://www.gnu.org/licenses/>.
                   <url>https://aoindustries.com/aoserv/client/apidocs/</url>
                   <location>${project.build.directory}/offlineLinks/com.aoindustries/aoserv-client</location>
                 </offlineLink>
+                <offlineLink>
+                  <url>https://javadoc.io/doc/com.github.spotbugs/spotbugs-annotations/${com.github.spotbugs:spotbugs-annotations:jar.version}/</url>
+                  <location>${project.build.directory}/offlineLinks/com.github.spotbugs/spotbugs-annotations</location>
+                </offlineLink>
               </offlineLinks>
             </configuration>
           </plugin>
@@ -183,6 +192,9 @@ along with aoserv-ipreputation.  If not, see <https://www.gnu.org/licenses/>.
       </dependency>
       <dependency>
         <groupId>com.aoindustries</groupId><artifactId>aoserv-client</artifactId><version>1.92.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId><version>4.8.0</version>
       </dependency>
       <!-- Transitive -->
       <dependency>
@@ -216,6 +228,10 @@ along with aoserv-ipreputation.  If not, see <https://www.gnu.org/licenses/>.
     </dependency>
     <dependency>
       <groupId>com.aoindustries</groupId><artifactId>aoserv-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 </project>

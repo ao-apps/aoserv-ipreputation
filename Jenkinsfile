@@ -37,6 +37,7 @@ def upstreamProjects = [
   '../oss/hodgepodge', // <groupId>com.aoapps</groupId><artifactId>ao-hodgepodge</artifactId>
   '../oss/lang', // <groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId>
   'client', // <groupId>com.aoindustries</groupId><artifactId>aoserv-client</artifactId>
+  // No Jenkins: <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId>
 ]
 
 /******************************************************************************************

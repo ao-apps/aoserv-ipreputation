@@ -27,6 +27,7 @@ import com.aoapps.hodgepodge.io.LogFollower;
 import com.aoindustries.aoserv.client.AoservConnector;
 import com.aoindustries.aoserv.client.net.IpAddress;
 import com.aoindustries.aoserv.client.net.reputation.Set;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -63,6 +64,7 @@ public class LogMonitor extends IpReputationMonitor {
   /**
    * Creates a new log monitor.
    */
+  @SuppressFBWarnings("CT_CONSTRUCTOR_THROW")
   public LogMonitor(AoservConnector conn, Properties config, int num) {
     super(conn, config, num);
     // setName
