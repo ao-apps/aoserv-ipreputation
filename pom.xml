@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 aoserv-ipreputation - Daemon that feeds IP reputation into the AOServ Platform.
-Copyright (C) 2020, 2021, 2022, 2023, 2024  AO Industries, Inc.
+Copyright (C) 2020, 2021, 2022, 2023, 2024, 2025  AO Industries, Inc.
     support@aoindustries.com
     7262 Bull Pen Cir
     Mobile, AL 36695
@@ -195,7 +195,7 @@ along with aoserv-ipreputation.  If not, see <https://www.gnu.org/licenses/>.
         <groupId>com.aoindustries</groupId><artifactId>aoserv-client</artifactId><version>1.92.1-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
       </dependency>
       <dependency>
-        <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId><version>4.8.6</version>
+        <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId><version>4.9.0</version>
       </dependency>
       <!-- Transitive -->
       <dependency>
