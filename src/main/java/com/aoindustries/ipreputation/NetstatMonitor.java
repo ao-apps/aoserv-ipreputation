@@ -1,6 +1,6 @@
 /*
  * aoserv-ipreputation - Daemon that feeds IP reputation into the AOServ Platform.
- * Copyright (C) 2012, 2013, 2018, 2020, 2021, 2022, 2023  AO Industries, Inc.
+ * Copyright (C) 2012, 2013, 2018, 2020, 2021, 2022, 2023, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -171,26 +171,26 @@ public class NetstatMonitor extends IpReputationMonitor {
                     final String localAddress;
                     final String foreignAddress;
                     final String state;
-                      {
-                        String[] values = Strings.split(line);
-                        if (values.length == 4) {
-                          proto = values[0];
-                          localAddress = values[1];
-                          foreignAddress = values[2];
-                          state = values[3];
-                        } else if (values.length == 6) {
-                          proto = values[0];
-                          localAddress = values[3];
-                          foreignAddress = values[4];
-                          state = values[5];
-                        } else {
-                          System.err.println(num + ": Warning, cannot parse line: " + line);
-                          proto = null;
-                          localAddress = null;
-                          foreignAddress = null;
-                          state = null;
-                        }
+                    {
+                      String[] values = Strings.split(line);
+                      if (values.length == 4) {
+                        proto = values[0];
+                        localAddress = values[1];
+                        foreignAddress = values[2];
+                        state = values[3];
+                      } else if (values.length == 6) {
+                        proto = values[0];
+                        localAddress = values[3];
+                        foreignAddress = values[4];
+                        state = values[5];
+                      } else {
+                        System.err.println(num + ": Warning, cannot parse line: " + line);
+                        proto = null;
+                        localAddress = null;
+                        foreignAddress = null;
+                        state = null;
                       }
+                    }
                     if (
                         "TCP".equalsIgnoreCase(proto)
                             && state != null
