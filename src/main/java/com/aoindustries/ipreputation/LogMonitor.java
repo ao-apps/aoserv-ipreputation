@@ -1,6 +1,6 @@
 /*
  * aoserv-ipreputation - Daemon that feeds IP reputation into the AOServ Platform.
- * Copyright (C) 2013, 2018, 2020, 2021, 2022, 2023  AO Industries, Inc.
+ * Copyright (C) 2013, 2018, 2020, 2021, 2022, 2023, 2026  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -208,8 +208,6 @@ public class LogMonitor extends IpReputationMonitor {
               }
             }
           }
-        } catch (ThreadDeath td) {
-          throw td;
         } catch (Throwable t) {
           t.printStackTrace(System.err);
           try {
@@ -291,8 +289,6 @@ public class LogMonitor extends IpReputationMonitor {
             }
             reputationSet.addReputation(newReputations);
           }
-        } catch (ThreadDeath td) {
-          throw td;
         } catch (InterruptedException e) {
           e.printStackTrace(System.err);
           // Restore the interrupted status

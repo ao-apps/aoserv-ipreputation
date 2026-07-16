@@ -1,6 +1,6 @@
 /*
  * aoserv-ipreputation - Daemon that feeds IP reputation into the AOServ Platform.
- * Copyright (C) 2012, 2013, 2018, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2012, 2013, 2018, 2020, 2021, 2022, 2026  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -78,8 +78,6 @@ public final class IpReputationDaemon {
                 IpReputationMonitor monitor = constructor.newInstance(conn, config, num);
                 monitor.start();
                 monitors.set(num - 1, monitor);
-              } catch (ThreadDeath td) {
-                throw td;
               } catch (Throwable t) {
                 // Catch any errors on each monitoring, starting-up those that can still start
                 t.printStackTrace(System.err);
@@ -99,8 +97,6 @@ public final class IpReputationDaemon {
             // Allow main method to exit
             started = true;
           }
-        } catch (ThreadDeath td) {
-          throw td;
         } catch (Throwable t) {
           t.printStackTrace(System.err);
           try {
@@ -115,8 +111,6 @@ public final class IpReputationDaemon {
       if (monitors.isEmpty()) {
         throw new IllegalStateException("No monitors defined");
       }
-    } catch (ThreadDeath td) {
-      throw td;
     } catch (Throwable t) {
       t.printStackTrace(System.err);
       try {
