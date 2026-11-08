@@ -40,6 +40,10 @@ binding.setVariable('upstreamProjects', [
   // No Jenkins: <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId>
 ])
 
+// This project's releases are installed to client applications for custom IP Reputation injection.
+// Also audit release branch on each build.
+binding.setVariable('scmAdditionalAuditBranches', 'release')
+
 /******************************************************************************************
  *                                                                                        *
  * Everything below this line is identical for all projects, except the copied matrix     *
