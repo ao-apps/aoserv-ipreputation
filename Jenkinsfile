@@ -42,6 +42,7 @@ binding.setVariable('upstreamProjects', [
 
 // This project's releases are installed to client applications for custom IP Reputation injection.
 // Also audit release branch on each build.
+// Note: These branches are added as additional build triggers
 binding.setVariable('scmAdditionalAuditBranches', 'release')
 
 /******************************************************************************************
